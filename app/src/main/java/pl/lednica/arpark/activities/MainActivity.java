@@ -88,7 +88,7 @@ public class MainActivity extends Activity {
             }
         });
 
-
+        drawPoint();
     }
 
     private void drawPoint(){
