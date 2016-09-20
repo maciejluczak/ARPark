@@ -5,19 +5,32 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
+import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+
+import java.text.DateFormat;
+import java.util.Date;
 
 import pl.lednica.arpark.R;
 import pl.lednica.arpark.animations.ButtonAnimation;
 import pl.lednica.arpark.helpers.MapPosition;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity
+        implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks, LocationListener{
 
     Button churchButton;
     Button compostelaButton;
@@ -31,9 +44,24 @@ public class MainActivity extends Activity {
     double hereX = 17.379202;
     double hereY = 52.527195;
 
+    //Variables to Localisation
+    private GoogleApiClient mGoogleApiClient;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Create Google Localisation Service instance
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
+
         setContentView(R.layout.activity_main);
 
 
@@ -155,4 +183,51 @@ public class MainActivity extends Activity {
         finish();
     }
 
+    @Override
+    protected void onResume() {
+        //Connect to localisation
+        mGoogleApiClient.connect();
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        //Disconnect to localisation
+        mGoogleApiClient.disconnect();
+        super.onPause();
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        LocationRequest mLocationRequest;
+        mLocationRequest = LocationRequest.create();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(5000);
+        mLocationRequest.setFastestInterval(3000);
+        try{
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        }catch (SecurityException e){
+            Log.e("PERM ERR",e.toString());
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.i("LocationFinderFragment", "Connection Suspended");
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        String mLastUpdateTime;
+        mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
+        hereX = location.getLongitude();
+        hereY = location.getLatitude();
+        Toast.makeText(this, "Updated: " + mLastUpdateTime+" hereX: "+ hereX+" HereY: "+hereY, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.i("LocationFinderFragment", "Connection failed. Error: " + connectionResult.getErrorCode());
+    }
 }
