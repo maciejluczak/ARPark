@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
 
-def VUFORIA_SDK_DIR = '/Users/stachu/Development/Android/vuforia-sdk-android-5-5-9'
+def VUFORIA_SDK_DIR = 'D:\\AR_Vuforia\\vuforia-sdk-android-5-5-9'
 def NATIVE_LIB_DIR = 'build/lib'
 def JAR_DIR = 'build/java/vuforia'
 android {
@@ -35,4 +35,8 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.4.0'
     compile files("$VUFORIA_SDK_DIR/$JAR_DIR/Vuforia.jar")
+
+    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'com.android.support:design:23.4.0'
+    compile 'com.google.android.gms:play-services-location:9.2.0'
 }
