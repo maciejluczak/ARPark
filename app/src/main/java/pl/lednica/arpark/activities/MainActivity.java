@@ -41,8 +41,14 @@ public class MainActivity extends Activity
     
     
 
-    double hereX = 17.379202;
-    double hereY = 52.527195;
+    double hereX = 17.377807;
+    double hereY = 52.52664;
+
+    double hereTestX = 16.911888;
+    double hereTestY = 52.418429;
+    double testDistanceX =  17.377807 - hereTestX;
+    double testDistanceY = 52.52664 - hereTestY;
+
 
     //Variables to Localisation
     private GoogleApiClient mGoogleApiClient;
@@ -60,6 +66,8 @@ public class MainActivity extends Activity
                     .addOnConnectionFailedListener(this)
                     .addApi(LocationServices.API)
                     .build();
+
+            Log.d(TAG, "jestem 1");
         }
 
         setContentView(R.layout.activity_main);
@@ -134,7 +142,6 @@ public class MainActivity extends Activity
 
 
 
-
         Log.d(TAG, "wysokosc: " + String.valueOf(canvas.getHeight()));
         Log.d(TAG, "szerokosc: " + String.valueOf(canvas.getWidth()));
         Log.d(TAG, "wysokosc bit: " + String.valueOf(canvas.getMaximumBitmapHeight()));
@@ -204,10 +211,13 @@ public class MainActivity extends Activity
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationRequest.setInterval(5000);
         mLocationRequest.setFastestInterval(3000);
+        Log.d(TAG, "jestem 2");
         try{
+            Log.d(TAG, "jestem 3");
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         }catch (SecurityException e){
             Log.e("PERM ERR",e.toString());
+            Log.d(TAG, "jestem 4");
         }
     }
 
@@ -219,15 +229,20 @@ public class MainActivity extends Activity
 
     @Override
     public void onLocationChanged(Location location) {
+        Log.d(TAG, "jestem 5");
+
         String mLastUpdateTime;
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
-        hereX = location.getLongitude();
-        hereY = location.getLatitude();
+        hereX = location.getLongitude() + testDistanceX;
+        hereY = location.getLatitude() + testDistanceY;
         Toast.makeText(this, "Updated: " + mLastUpdateTime+" hereX: "+ hereX+" HereY: "+hereY, Toast.LENGTH_SHORT).show();
+        drawPoint();
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.d(TAG, "jestem 6");
+
         Log.i("LocationFinderFragment", "Connection failed. Error: " + connectionResult.getErrorCode());
     }
 }
