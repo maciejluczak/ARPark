@@ -82,9 +82,11 @@
             android:text="Przegląd budynków"
             android:id="@+id/object3DViewButton"
             android:layout_gravity="center"
-            android:background="@drawable/object_button"
+            android:layout_marginTop="20dp"
             android:layout_marginRight="10dp"
             android:layout_marginLeft="10dp"
+            android:background="@drawable/objects_button"
+            android:textColor="@android:color/white" />
             />
     </LinearLayout>
 </LinearLayout>
