@@ -9,7 +9,7 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical"
         android:layout_width="0dp"
-        android:layout_weight="1"
+        android:layout_weight="2"
         android:layout_height="fill_parent"
         android:background="@color/island_background">
 
@@ -31,17 +31,62 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Church area"
+            android:text="Kościół"
             android:id="@+id/churchButton"
             android:layout_gravity="center"
-            android:background="@drawable/object_button"/>
+            android:background="@drawable/object_button"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"/>
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Compostela Area"
+            android:text="Grób Pielgrzyma"
             android:id="@+id/compostelaButton"
             android:layout_gravity="center"
-            android:background="@drawable/object_button"/>
+            android:background="@drawable/object_button"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Wał obronny"
+            android:id="@+id/wallButton"
+            android:layout_gravity="center"
+            android:background="@drawable/object_button"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Palatium"
+            android:id="@+id/palatiumButton"
+            android:layout_gravity="center"
+            android:background="@drawable/object_button"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            />
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Podgrodzie"
+            android:id="@+id/boroughButton"
+            android:layout_gravity="center"
+            android:background="@drawable/object_button"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            />
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Przegląd budynków"
+            android:id="@+id/object3DViewButton"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/objects_button"
+            android:textColor="@android:color/white" />
+            />
     </LinearLayout>
 </LinearLayout>
