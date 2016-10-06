@@ -12,41 +12,42 @@ package pl.lednica.arpark.object_recognition_engine;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
 
 
 public abstract class MeshObject
 {
-    
+
     public enum BUFFER_TYPE
     {
         BUFFER_TYPE_VERTEX, BUFFER_TYPE_TEXTURE_COORD, BUFFER_TYPE_NORMALS, BUFFER_TYPE_INDICES
     }
-    
-    
-    public Buffer getVertices()
+
+
+    public FloatBuffer getVertices()
     {
         return getBuffer(BUFFER_TYPE.BUFFER_TYPE_VERTEX);
     }
-    
-    
-    public Buffer getTexCoords()
+
+
+    public FloatBuffer getTexCoords()
     {
         return getBuffer(BUFFER_TYPE.BUFFER_TYPE_TEXTURE_COORD);
     }
-    
-    
-    public Buffer getNormals()
+
+
+    public FloatBuffer getNormals()
     {
         return getBuffer(BUFFER_TYPE.BUFFER_TYPE_NORMALS);
     }
-    
-    
-    public Buffer getIndices()
+
+
+    public FloatBuffer getIndices()
     {
         return getBuffer(BUFFER_TYPE.BUFFER_TYPE_INDICES);
     }
-    
-    
+
+
     protected Buffer fillBuffer(double[] array)
     {
         // Convert to floats because OpenGL doesn't work on doubles, and manually
@@ -57,12 +58,12 @@ public abstract class MeshObject
         for (double d : array)
             bb.putFloat((float) d);
         bb.rewind();
-        
+
         return bb;
-        
+
     }
-    
-    
+
+
     protected Buffer fillBuffer(float[] array)
     {
         // Each float takes 4 bytes
@@ -71,12 +72,12 @@ public abstract class MeshObject
         for (float d : array)
             bb.putFloat(d);
         bb.rewind();
-        
+
         return bb;
-        
+
     }
-    
-    
+
+
     protected Buffer fillBuffer(short[] array)
     {
         // Each short takes 2 bytes
@@ -85,18 +86,18 @@ public abstract class MeshObject
         for (short s : array)
             bb.putShort(s);
         bb.rewind();
-        
+
         return bb;
-        
+
     }
-    
-    
-    public abstract Buffer getBuffer(BUFFER_TYPE bufferType);
-    
-    
+
+
+    public abstract FloatBuffer getBuffer(BUFFER_TYPE bufferType);
+
+
     public abstract int getNumObjectVertex();
-    
-    
+
+
     public abstract int getNumObjectIndex();
-    
+
 }

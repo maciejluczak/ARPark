@@ -222,7 +222,7 @@ public class SimpleLightColorRenderer implements GLSurfaceView.Renderer {
         final float upZ = 0.0f;
         Matrix.setLookAtM(mViewMatrix, 0, eyeX, eyeY, eyeZ, lookX, lookY, lookZ, upX, upY, upZ);
         Matrix.translateM(mModelMatrix,0,0.0f,0.0f ,-1.5f);
-        drawModel(meschObject.getmModelVertices());
+        drawModel(meschObject.getmModel());
     }
 
     private void drawModel(final FloatBuffer aTriangleBuffer)

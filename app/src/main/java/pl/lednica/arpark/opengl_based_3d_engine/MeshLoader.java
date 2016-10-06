@@ -32,7 +32,7 @@ public class MeshLoader {
         mAssetManager = assetManager;
     }
 
-    private FloatBuffer LoadToFolatBuffer() throws IOException{
+    public FloatBuffer loadToFloatBuffer() throws IOException{
         InputStream is = null;
         DataInputStream dis = null;
         ByteBuffer verts;
@@ -42,7 +42,7 @@ public class MeshLoader {
             int count = is.available();
 
             int floatsToRead = count / mBytesPerFloat;
-            mCount = count / mStrideBytes;
+            mCount = count;
             verts = ByteBuffer.allocateDirect(floatsToRead * 4);
             verts.order(ByteOrder.nativeOrder());
 

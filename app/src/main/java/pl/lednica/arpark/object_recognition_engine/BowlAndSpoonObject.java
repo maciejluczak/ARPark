@@ -15,18 +15,18 @@ import java.nio.Buffer;
 public class BowlAndSpoonObject extends MeshObject
 {
     // Data for drawing the 3D plane as overlay
-    private static final double cubeVertices[] = BowlAndSpoonObjectModel.TEAPOT_VERTS;
-    
-    private static final double cubeNormals[] = BowlAndSpoonObjectModel.TEAPOT_NORMS;
-    
-    private static final double cubeTexcoords[] = BowlAndSpoonObjectModel.TEAPOT_TEX_COORDS;
-    
-    private static final short cubeIndices[] = BowlAndSpoonObjectModel.TEAPOT_INDICES;
-    
-    Buffer mVertBuff;
-    Buffer mTexCoordBuff;
-    Buffer mNormBuff;
-    Buffer mIndBuff;
+    protected static final double cubeVertices[] =  BowlAndSpoonObjectModel.TEAPOT_VERTS;// BowlAndSpoonObjectModel.TEAPOT_VERTS;
+
+    protected static final double cubeNormals[] = BowlAndSpoonObjectModel.TEAPOT_NORMS;
+
+    protected static final double cubeTexcoords[] = BowlAndSpoonObjectModel.TEAPOT_TEX_COORDS;
+
+    protected static final short cubeIndices[] = BowlAndSpoonObjectModel.TEAPOT_INDICES;
+
+    protected Buffer mVertBuff;
+    protected Buffer mTexCoordBuff;
+    protected Buffer mNormBuff;
+    protected Buffer mIndBuff;
     
     
     public BowlAndSpoonObject()

@@ -67,7 +67,7 @@ public class MultiTargetRenderer implements GLSurfaceView.Renderer
     private double prevTime;
     private float rotateAngle;
 
-    private BowlAndSpoonObject bowlAndSpoonObject = new BowlAndSpoonObject();
+    private BowlAndSpoonObject bowlAndSpoonObject;
 
     // Constants:
     final static float kCubeScaleX = 120.0f * 0.75f / 2.0f;
@@ -81,9 +81,10 @@ public class MultiTargetRenderer implements GLSurfaceView.Renderer
 
 
 
-    public MultiTargetRenderer(SampleApplicationSession session)
+    public MultiTargetRenderer(SampleApplicationSession session, BowlAndSpoonObject object)
     {
         vuforiaAppSession = session;
+        bowlAndSpoonObject = object;
     }
 
 
