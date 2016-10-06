@@ -18,13 +18,13 @@ public class MeshLoader {
 
     private String mFileName;
     private AssetManager mAssetManager;
-    private FloatBuffer mModelVertices;
+    private FloatBuffer mModel;
 
     private final int mBytesPerFloat = 4;
 
     private final int mStrideBytes = 7 * mBytesPerFloat;
 
-    private int mVertexCount=0;
+    private int mCount=0;
 
 
     public MeshLoader(String filename, AssetManager assetManager) {
@@ -42,7 +42,7 @@ public class MeshLoader {
             int count = is.available();
 
             int floatsToRead = count / mBytesPerFloat;
-            mVertexCount = count / mStrideBytes;
+            mCount = count / mStrideBytes;
             verts = ByteBuffer.allocateDirect(floatsToRead * 4);
             verts.order(ByteOrder.nativeOrder());
 
@@ -51,7 +51,7 @@ public class MeshLoader {
                 verts.putFloat(readTmp);
             }
             verts.rewind();
-            mModelVertices = verts.asFloatBuffer();
+            mModel = verts.asFloatBuffer();
         }
         finally {
             if (is != null)
@@ -59,14 +59,14 @@ public class MeshLoader {
             if (dis != null)
                 dis.close();
         }
-        return mModelVertices;
+        return mModel;
     }
 
-    public int getmVertexCount() {
-        return mVertexCount;
+    public int getmCount() {
+        return mCount;
     }
 
-    public FloatBuffer getmModelVertices() {
-        return mModelVertices;
+    public FloatBuffer getmModel() {
+        return mModel;
     }
 }
