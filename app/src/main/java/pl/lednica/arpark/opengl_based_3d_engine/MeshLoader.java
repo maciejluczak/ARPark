@@ -63,7 +63,7 @@ public class MeshLoader {
             verts.order(ByteOrder.nativeOrder());
 
             for (int i = 0; i < floatsToRead; i++) {
-                float   readTmp = dis.readFloat();
+                float readTmp = dis.readFloat();
                 verts.putFloat(readTmp);
             }
             verts.rewind();
