@@ -6,20 +6,20 @@ package pl.lednica.arpark.activities;
  * renderowanie obiektów 3d
  */
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ConfigurationInfo;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import pl.lednica.arpark.R;
 import pl.lednica.arpark.opengl_based_3d_engine.SimpleLightColorRenderer;
 
 
-public class Object3DViewActivity extends AppCompatActivity {
+public class Object3DViewActivity extends Activity {
 
     private GLSurfaceView mGLSurfaceView;
     private static final String LOGTAG = "Object3DViewActivity";

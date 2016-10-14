@@ -47,7 +47,8 @@ public abstract class SimpleLightColorShaders {
                 // pointing in the same direction then it will get max illumination.
                 + "float diffuse = max(dot(v_Normal, lightVector), 0.1); \n"
                 // Add attenuation.
-                + "diffuse = diffuse * (1.0 / (1.0 + (0.25 * distance * distance))); \n"
+                + "diffuse = diffuse * (1.0 / (1.0 + (0.1 * distance))); \n"
+                + "diffuse = diffuse + 0.3; \n"
                 // Multiply the color by the diffuse illumination level to get final output color.
                 + "gl_FragColor = v_Color * diffuse; \n"
             + "} \n";
