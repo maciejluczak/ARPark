@@ -108,7 +108,7 @@ public class SensorCameraViewRenderer implements GLSurfaceView.Renderer{
         mActivity = activity;
         mCameraView = camera;
         // Define points for equilateral triangles.
-        // This triangle is red, green, and blue.
+        // This trisangle is red, green, and blue.
         //strzalka trojkatna i domyslny bufor
        /* final float[] triangle1VerticesData = {
                 // X, Y, Z,

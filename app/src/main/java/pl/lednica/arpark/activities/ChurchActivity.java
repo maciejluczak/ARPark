@@ -37,6 +37,8 @@ import com.vuforia.STORAGE_TYPE;
 import java.util.Vector;
 
 import pl.lednica.arpark.R;
+import pl.lednica.arpark.object_recognition_engine.BowlAndSpoonObject;
+import pl.lednica.arpark.object_recognition_engine.ChurchObject;
 import pl.lednica.arpark.object_recognition_engine.LoadingDialogHandler;
 import pl.lednica.arpark.object_recognition_engine.MultiTargetRenderer;
 import pl.lednica.arpark.object_recognition_engine.SampleApplicationControl;
@@ -284,7 +286,7 @@ public class ChurchActivity extends Activity implements SampleApplicationControl
         mGlView.init(translucent, depthSize, stencilSize);
 
         // Stworzenie w nim  renderera od renderowania :)
-        mRenderer = new MultiTargetRenderer(vuforiaAppSession);
+        mRenderer = new MultiTargetRenderer(vuforiaAppSession, new ChurchObject());
         mRenderer.setTextures(mTextures);
         mGlView.setRenderer(mRenderer);
 
