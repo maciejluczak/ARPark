@@ -13,26 +13,31 @@ import pl.lednica.arpark.opengl_based_3d_engine.MeshLoader;
 public class PalatiumObject extends BowlAndSpoonObject {
 
     private int numIndexes=0;
+    private int numVertex=0;
     public PalatiumObject(AssetManager inAssetManager) throws IOException {
-        MeshLoader vertLoader = new MeshLoader("Palatium/v.dat", inAssetManager);
-        numIndexes = vertLoader.getmCount();
-        mVertBuff = vertLoader.loadToFloatBuffer();
+        MeshLoader mesh = new MeshLoader();
+        mesh.loadToBuffer("Palatium/v.dat", MeshLoader.BUFFER_TYPE.BUFFER_TYPE_VERTEX,
+                MeshLoader.BUFFER_DATA_TYPE.DATA_FLOAT,inAssetManager);
+        numVertex = mesh.mCountVertices;
+        numIndexes = mesh.mCountVertices * mesh.mPositionDataSize;
+        mVertBuff = mesh.mModelVertices;
 
-        MeshLoader texLoader = new MeshLoader("Palatium/t.dat", inAssetManager);
-        mTexCoordBuff = texLoader.loadToFloatBuffer();
+        mesh.loadToBuffer("Palatium/t.dat", MeshLoader.BUFFER_TYPE.BUFFER_TYPE_VERTEX,
+                MeshLoader.BUFFER_DATA_TYPE.DATA_FLOAT,inAssetManager);
+        mTexCoordBuff = mesh.mModelVertices;
 
-        MeshLoader normLoader = new MeshLoader("Palatium/n.dat", inAssetManager);
-        mNormBuff = normLoader.loadToFloatBuffer();
+        mesh.loadToBuffer("Palatium/n.dat", MeshLoader.BUFFER_TYPE.BUFFER_TYPE_VERTEX,
+                MeshLoader.BUFFER_DATA_TYPE.DATA_FLOAT,inAssetManager);
+        mNormBuff = mesh.mModelVertices;
 
-        MeshLoader indLoader = new MeshLoader("Palatium/i.dat", inAssetManager);
-        mIndBuff = indLoader.loadToFloatBuffer();
+        mesh.loadToBuffer("Palatium/i.dat", MeshLoader.BUFFER_TYPE.BUFFER_TYPE_VERTEX,
+                MeshLoader.BUFFER_DATA_TYPE.DATA_FLOAT,inAssetManager);
+        mIndBuff = mesh.mModelVertices;
     }
     @Override
     public Buffer getBuffer(BUFFER_TYPE bufferType)
     {
         Buffer result = null;
-
-
         //MeshLoader meshLoader = new MeshLoader("Palatium/i.dat");
         switch (bufferType)
         {
@@ -57,7 +62,7 @@ public class PalatiumObject extends BowlAndSpoonObject {
     @Override
     public int getNumObjectVertex()
     {
-        return numIndexes / 3;
+        return numVertex;
     }
 
 

@@ -7,9 +7,11 @@ Vuforia is a trademark of PTC Inc., registered in the United States and other
 countries.
 ===============================================================================*/
 
-package pl.lednica.arpark.object_recognition_engine;;
+package pl.lednica.arpark.object_recognition_engine;
 
 import java.nio.Buffer;
+
+;
 
 
 public class BowlAndSpoonObject extends MeshObject
@@ -27,8 +29,7 @@ public class BowlAndSpoonObject extends MeshObject
     protected Buffer mTexCoordBuff;
     protected Buffer mNormBuff;
     protected Buffer mIndBuff;
-    
-    
+
     public BowlAndSpoonObject()
     {
         mVertBuff = fillBuffer(cubeVertices);
@@ -36,7 +37,6 @@ public class BowlAndSpoonObject extends MeshObject
         mNormBuff = fillBuffer(cubeNormals);
         mIndBuff = fillBuffer(cubeIndices);
     }
-    
     
     @Override
     public Buffer getBuffer(BUFFER_TYPE bufferType)

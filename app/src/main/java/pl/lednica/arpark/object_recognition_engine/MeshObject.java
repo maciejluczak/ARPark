@@ -12,7 +12,6 @@ package pl.lednica.arpark.object_recognition_engine;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
 
 
 public abstract class MeshObject
@@ -24,25 +23,25 @@ public abstract class MeshObject
     }
 
 
-    public FloatBuffer getVertices()
+    public Buffer getVertices()
     {
         return getBuffer(BUFFER_TYPE.BUFFER_TYPE_VERTEX);
     }
 
 
-    public FloatBuffer getTexCoords()
+    public Buffer getTexCoords()
     {
         return getBuffer(BUFFER_TYPE.BUFFER_TYPE_TEXTURE_COORD);
     }
 
 
-    public FloatBuffer getNormals()
+    public Buffer getNormals()
     {
         return getBuffer(BUFFER_TYPE.BUFFER_TYPE_NORMALS);
     }
 
 
-    public FloatBuffer getIndices()
+    public Buffer getIndices()
     {
         return getBuffer(BUFFER_TYPE.BUFFER_TYPE_INDICES);
     }
@@ -92,7 +91,7 @@ public abstract class MeshObject
     }
 
 
-    public abstract FloatBuffer getBuffer(BUFFER_TYPE bufferType);
+    public abstract Buffer getBuffer(BUFFER_TYPE bufferType);
 
 
     public abstract int getNumObjectVertex();

@@ -8,7 +8,6 @@ import android.os.SystemClock;
 import android.util.Log;
 
 import java.io.IOException;
-import java.nio.FloatBuffer;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -40,25 +39,26 @@ public class SimpleLightColorRenderer implements GLSurfaceView.Renderer {
     private float[] mLightModelMatrix = new float[16];
 
     /** Dane modelu będą przechowywane w postaci float buffer. */
-    private FloatBuffer mModelVertices;
-    private FloatBuffer mModelColors;
-    private FloatBuffer mModelNormals;
-    private FloatBuffer mModelTextures;
-    private FloatBuffer mModelIndices;
-    private MeshLoader meshVertices;
-    private MeshLoader meshNormals;
-    private MeshLoader meshColors;
-    private MeshLoader meshTextures;
-    private MeshLoader meshIndices;
+    private MeshLoader mesh;
 
+    int mCubePositionsBufferIdx;
+    int mCubeNormalsBufferIdx;
+    int mCubeTexCoordsBufferIdx;
+    int mCubeIndicesBufferIdx;
 
     private Object3DViewActivity mActivity;
     private AssetManager mAssetMenager;
     private static String file_cross_v = "Compostela/kosciol-lednica_v_Model.dat";
-    //private static String file_cross_c = "Compostela/cubeText_Cube_c_Model.dat";
+    //private static String file_cross_c = "Compostela/kosciol-lednica_Cube_c_Model.dat";
     private static String file_cross_n = "Compostela/kosciol-lednica_n_Model.dat";
     private static String file_cross_t = "Compostela/kosciol-lednica_t_Model.dat";
-    private static String file_cross_i = "Compostela/kosciol-lednica_Cube_i_Model.dat";
+    private static String file_cross_i = "Compostela/kosciol-lednica_Model.dat";
+
+    /*private static String file_cross_v = "Compostela/kosciol-lednica_Cube_v_Model.dat";
+    //private static String file_cross_c = "Compostela/kosciol-lednica_Cube_c_Model.dat";
+    private static String file_cross_n = "Compostela/kosciol-lednica_Cube_n_Model.dat";
+    private static String file_cross_t = "Compostela/kosciol-lednica_Cube_t_Model.dat";
+    private static String file_cross_i = "Compostela/kosciol-lednica_Cube_i_Model.dat";*/
 
     private int mMVPMatrixHandle;
     private int mMVMatrixHandle;
@@ -69,22 +69,6 @@ public class SimpleLightColorRenderer implements GLSurfaceView.Renderer {
     private int mTextureDataHandle;
     private int mTextureCoordinateHandle;
     private int mTextureUniformHandle;
-
-    /** How many bytes per float. */
-    private final int mBytesPerFloat = 4;
-    /** How many elements per vertex. */
-    private final int mStrideBytesVertex = 3 * mBytesPerFloat;
-    private final int mStrideBytesColor = 4 * mBytesPerFloat;
-    private final int mStrideBytesNormal = 3 * mBytesPerFloat;
-    private final int mStrideBytesTexture = 2 * mBytesPerFloat;
-    /**How many vertex to print */
-    private int mVertexCount=0;
-
-    private final int mPositionDataSize = 3;
-    private final int mColorDataSize = 4;
-    private final int mNormalDataSize = 3;
-    private final int mTextureDataSize = 2;
-
 
 
     private final float[] mLightPosInModelSpace = new float[] {0.0f, 0.0f, 0.0f, 1.0f};
@@ -100,18 +84,20 @@ public class SimpleLightColorRenderer implements GLSurfaceView.Renderer {
     public SimpleLightColorRenderer(Object3DViewActivity activity) {
         mActivity = activity;
         mAssetMenager = mActivity.getResources().getAssets();
-        meshVertices = new MeshLoader(file_cross_v, mAssetMenager);
-        //meshColors = new MeshLoader(file_cross_c, mAssetMenager);
-        meshNormals = new MeshLoader(file_cross_n, mAssetMenager);
-        meshTextures = new MeshLoader(file_cross_t,mAssetMenager);
-        //meshIndices = new MeshLoader(file_cross_i, mAssetMenager);
-        try{
-            mModelVertices = meshVertices.loadToFloatBuffer();
-            //mModelColors = meshColors.loadToFloatBuffer();
-            mModelNormals = meshNormals.loadToFloatBuffer();
-            mModelTextures = meshTextures.loadToFloatBuffer();
-            //mModelTextures = meshTextures.loadDummTextureCordinate();
-            //mModelIndices = meshIndices.loadToFloatBuffer();
+        mesh = new MeshLoader();
+        try {
+            mesh.loadToBuffer(file_cross_v, MeshLoader.BUFFER_TYPE.BUFFER_TYPE_VERTEX,
+                                MeshLoader.BUFFER_DATA_TYPE.DATA_FLOAT, mAssetMenager);
+
+            mesh.loadToBuffer(file_cross_t, MeshLoader.BUFFER_TYPE.BUFFER_TYPE_TEXTURE_COORD,
+                                MeshLoader.BUFFER_DATA_TYPE.DATA_FLOAT, mAssetMenager);
+
+            mesh.loadToBuffer(file_cross_n, MeshLoader.BUFFER_TYPE.BUFFER_TYPE_NORMALS,
+                                MeshLoader.BUFFER_DATA_TYPE.DATA_FLOAT, mAssetMenager);
+
+            //IDX
+            /*mesh.loadToBuffer(file_cross_i, MeshLoader.BUFFER_TYPE.BUFFER_TYPE_INDICES,
+                                MeshLoader.BUFFER_DATA_TYPE.DATA_FLOAT, mAssetMenager);*/
         }catch (IOException e){
             Log.e(LOGTAG,"Loading models error!");
         }
@@ -123,10 +109,11 @@ public class SimpleLightColorRenderer implements GLSurfaceView.Renderer {
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
         // Use culling to remove back faces.
+        GLES20.glFrontFace(GLES20.GL_CCW);
         GLES20.glEnable(GLES20.GL_CULL_FACE);
-
+        GLES20.glCullFace(GLES20.GL_BACK);
         // Enable depth testing
-        GLES20.glEnable(GLES20.GL_DEPTH_TEST);;
+        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
         // Position the eye behind the origin.
         final float eyeX = 0.0f;
@@ -162,7 +149,7 @@ public class SimpleLightColorRenderer implements GLSurfaceView.Renderer {
                 new String[] {"a_Position", "a_Normal","a_TexCoordinate"});
 
         //mTextureDataHandle = meshTextures.loadTexture(mActivity, R.drawable.kosciol_tekstura);
-        mTextureDataHandle = meshTextures.loadTextureFromApk("Compostela/kosciol_tekstura.jpg",mAssetMenager);
+        mTextureDataHandle = mesh.loadTextureFromApk("Compostela/kosciol_tekstura.jpg",mAssetMenager);
         // Define a simple shader program for our point.
         final String pointVertexShader =
                 "uniform mat4 u_MVPMatrix;      \n"
@@ -186,6 +173,38 @@ public class SimpleLightColorRenderer implements GLSurfaceView.Renderer {
         final int pointFragmentShaderHandle = compileShader(GLES20.GL_FRAGMENT_SHADER, pointFragmentShader);
         mPointProgramHandle = createAndLinkProgram(pointVertexShaderHandle, pointFragmentShaderHandle,
                 new String[] {"a_Position"});
+
+
+        //IDX
+        /*int buffers[] = new int[3];
+        GLES20.glGenBuffers(3, buffers, 0);
+
+        int ibo[] = new int[1];
+
+       GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, buffers[0]);
+        GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, mesh.mModelVertices.capacity() * mesh.mBytesPerFloat,
+                mesh.mModelVertices, GLES20.GL_STATIC_DRAW);
+
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, buffers[1]);
+        GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, mesh.mModelNormals.capacity() * mesh.mBytesPerFloat,
+                mesh.mModelNormals, GLES20.GL_STATIC_DRAW);
+
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, buffers[2]);
+        GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, mesh.mModelTextures.capacity() * mesh.mBytesPerFloat,
+                mesh.mModelTextures, GLES20.GL_STATIC_DRAW);
+
+        GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, ibo[0]);
+        GLES20.glBufferData(GLES20.GL_ELEMENT_ARRAY_BUFFER, mesh.mModelIndices.capacity() * mesh.mBytesPerShort,
+                mesh.mModelIndices, GLES20.GL_STATIC_DRAW);
+
+        mCubePositionsBufferIdx = buffers[0];
+        mCubeNormalsBufferIdx = buffers[1];
+        mCubeTexCoordsBufferIdx = buffers[2];
+        mCubeIndicesBufferIdx = ibo[0];
+
+        // IMPORTANT: Unbind from the buffer when we're done with it.
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
+        GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0);*/
     }
 
     @Override
@@ -264,9 +283,9 @@ public class SimpleLightColorRenderer implements GLSurfaceView.Renderer {
     {
         //przekazanie informacji o wierzchołkach do OpenGL
         //są osobne bufory dla każdego rodzaju danych więc  offset zawsze jest 0
-        mModelVertices.position(0);
-        GLES20.glVertexAttribPointer(mPositionHandle, mPositionDataSize, GLES20.GL_FLOAT, false,
-                mStrideBytesVertex, mModelVertices);
+        mesh.mModelVertices.position(0);
+        GLES20.glVertexAttribPointer(mPositionHandle, mesh.mPositionDataSize, GLES20.GL_FLOAT, false,
+                mesh.mStrideBytesVertex, mesh.mModelVertices);
         GLES20.glEnableVertexAttribArray(mPositionHandle);
 
         //przekazanie informacji o kolorach do OpenGL
@@ -276,16 +295,31 @@ public class SimpleLightColorRenderer implements GLSurfaceView.Renderer {
         GLES20.glEnableVertexAttribArray(mColorHandle);*/
 
         //przekazanie informacji o normalnych do OpenGL
-        mModelNormals.position(0);
-        GLES20.glVertexAttribPointer(mNormalHandle, mNormalDataSize, GLES20.GL_FLOAT, false,
-                mStrideBytesNormal, mModelNormals);
+        mesh.mModelNormals.position(0);
+        GLES20.glVertexAttribPointer(mNormalHandle, mesh.mNormalDataSize, GLES20.GL_FLOAT, false,
+                mesh.mStrideBytesNormal, mesh.mModelNormals);
         GLES20.glEnableVertexAttribArray(mNormalHandle);
 
         //przekazanie informacji o teksturach
-        mModelTextures.position(0);
-        GLES20.glVertexAttribPointer(mTextureCoordinateHandle, mTextureDataSize, GLES20.GL_FLOAT, false,
-                0, mModelTextures);
+        mesh.mModelTextures.position(0);
+        GLES20.glVertexAttribPointer(mTextureCoordinateHandle, mesh.mTextureDataSize, GLES20.GL_FLOAT, false,
+                0, mesh.mModelTextures);
         GLES20.glEnableVertexAttribArray(mTextureCoordinateHandle);
+
+        //IDX
+        /*GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, mCubePositionsBufferIdx);
+        GLES20.glEnableVertexAttribArray(mPositionHandle);
+        GLES20.glVertexAttribPointer(mPositionHandle, mesh.mPositionDataSize, GLES20.GL_FLOAT, false, 0, 0);
+
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, mCubeNormalsBufferIdx);
+        GLES20.glEnableVertexAttribArray(mNormalHandle);
+        GLES20.glVertexAttribPointer(mNormalHandle, mesh.mNormalDataSize, GLES20.GL_FLOAT, false, 0, 0);
+
+        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, mCubeTexCoordsBufferIdx);
+        GLES20.glEnableVertexAttribArray(mTextureCoordinateHandle);
+        GLES20.glVertexAttribPointer(mTextureCoordinateHandle, mesh.mTextureDataSize, GLES20.GL_FLOAT, false, 0, 0);
+
+        GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, mCubeIndicesBufferIdx);*/
 
         // Utworzenie macierzy Model x View i przekazanie jej do OpenGL w celu kalkulacji światła
         Matrix.multiplyMM(mMVPMatrix, 0, mViewMatrix, 0, mModelMatrix, 0);
@@ -297,14 +331,17 @@ public class SimpleLightColorRenderer implements GLSurfaceView.Renderer {
 
         // Przekazanie pozycji światła w przestrzeni widoku
         GLES20.glUniform3f(mLightPosHandle, mLightPosInEyeSpace[0], mLightPosInEyeSpace[1], mLightPosInEyeSpace[2]);
-        //Log.e(LOGTAG,"Ilosc wierzch: "+ meshVertices.getmCount());
-        //Rysowanie modelu
 
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, meshVertices.getmCount()/mPositionDataSize);
-        //GLES20.glDrawElements(GLES20.GL_TRIANGLES,
-        //        meshIndices.getmCount(),
-        //        GLES20.GL_FLOAT, mModelIndices);
-        //GLES20.glDrawElements(GLES20.GL_TRIANGLES,4,GLES20.GL_FLOAT,0);
+        //Rysowanie modelu
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, mesh.mCountVertices);
+        //IDX
+        /*GLES20.glDrawElements(GLES20.GL_TRIANGLES,
+                mesh.mCountIndices,
+                GLES20.GL_UNSIGNED_SHORT, mesh.mModelIndices);*/
+
+        //IDX
+        /*GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
+        GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0);*/
     }
 
     /**
@@ -340,7 +377,6 @@ public class SimpleLightColorRenderer implements GLSurfaceView.Renderer {
     private int compileShader(final int shaderType, final String shaderSource)
     {
         int shaderHandle = GLES20.glCreateShader(shaderType);
-Log.e(LOGTAG,"shaderHandle "+ shaderHandle);
         if (shaderHandle != 0)
         {
             // Pass in the shader source.

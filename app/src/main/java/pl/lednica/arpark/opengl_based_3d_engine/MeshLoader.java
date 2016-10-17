@@ -12,9 +12,12 @@ import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+
+import static java.sql.Types.NULL;
 
 /**
  * Created by Maciej on 2016-10-04.
@@ -23,51 +26,79 @@ import java.nio.FloatBuffer;
 
 public class MeshLoader {
 
-    private String mFileName;
-    private AssetManager mAssetManager;
-    private FloatBuffer mModel;
+    public FloatBuffer mModelVertices;
+    public FloatBuffer mModelColors;
+    public FloatBuffer mModelNormals;
+    public FloatBuffer mModelTextures;
+    public Buffer mModelIndices;
 
-    public ByteBuffer mData;
+    public int mCountVertices=0;
+    public int mCountColors=0;
+    public int mCountNormals=0;
+    public int mCountTextures=0;
+    public int mCountIndices=0;
 
-    private int mBytesPerFloat = 4;
+    public final int mBytesPerFloat = 4;
+    public final int mBytesPerShort = 2;
 
-    private int mStrideBytes = 7 * mBytesPerFloat;
+    public final int mPositionDataSize = 3;
+    public final int mColorDataSize = 4;
+    public final int mNormalDataSize = 3;
+    public final int mTextureDataSize = 2;
+
+
+    public final int mStrideBytesVertex = mPositionDataSize * mBytesPerFloat;
+    public final int mStrideBytesColor = mColorDataSize * mBytesPerFloat;
+    public final int mStrideBytesNormal = mNormalDataSize * mBytesPerFloat;
+    public final int mStrideBytesTexture = mTextureDataSize * mBytesPerFloat;
+
 
     private int mCount=0;
 
     private static String LOGTAG = "MeshLoader";
-    private static int mtype;
+
 
     public enum BUFFER_TYPE
     {
-        VERTEX, TEXTURE_COORD, NORMALS, INDICES
+        BUFFER_TYPE_VERTEX, BUFFER_TYPE_TEXTURE_COORD, BUFFER_TYPE_NORMALS, BUFFER_TYPE_INDICES
+    }
+    public enum BUFFER_DATA_TYPE
+    {
+        DATA_FLOAT, DATA_SHORT
     }
 
-    public MeshLoader(String filename, AssetManager assetManager) {
-        mFileName = filename;
-        mAssetManager = assetManager;
-    }
-
-    public FloatBuffer loadToFloatBuffer() throws IOException{
+    public void loadToBuffer(String filename, BUFFER_TYPE buffer_type,
+                                   BUFFER_DATA_TYPE buffer_data_type , AssetManager assetManager) throws IOException{
         InputStream is = null;
         DataInputStream dis = null;
-        ByteBuffer verts;
+        ByteBuffer vertices;
+
         try {
-            is = mAssetManager.open(mFileName);
+            is = assetManager.open(filename);
             dis = new DataInputStream(is);
             int count = is.available();
-
-            int floatsToRead = count / mBytesPerFloat;
-            mCount =floatsToRead;// count / mStrideBytes;
-            verts = ByteBuffer.allocateDirect(floatsToRead * mBytesPerFloat);
-            verts.order(ByteOrder.nativeOrder());
-
-            for (int i = 0; i < floatsToRead; i++) {
-                float readTmp = dis.readFloat();
-                verts.putFloat(readTmp);
+            int numbersToRead = NULL;
+            if(buffer_data_type == BUFFER_DATA_TYPE.DATA_FLOAT) {
+                numbersToRead = count / mBytesPerFloat;
             }
-            verts.rewind();
-            mModel = verts.asFloatBuffer();
+            if(buffer_data_type == BUFFER_DATA_TYPE.DATA_SHORT) {
+                numbersToRead = count / mBytesPerShort;
+            }
+            mCount =numbersToRead;
+            vertices = ByteBuffer.allocateDirect(count);
+            vertices.order(ByteOrder.nativeOrder());
+
+            for (int i = 0; i < numbersToRead; i++) {
+                if(buffer_data_type == BUFFER_DATA_TYPE.DATA_FLOAT) {
+                    float readTmp = dis.readFloat();
+                    vertices.putFloat(readTmp);
+                }
+                if(buffer_data_type == BUFFER_DATA_TYPE.DATA_SHORT) {
+                    short readTmp = dis.readShort();
+                    vertices.putShort(readTmp);
+                }
+            }
+            vertices.rewind();
         }
         finally {
             if (is != null)
@@ -75,76 +106,29 @@ public class MeshLoader {
             if (dis != null)
                 dis.close();
         }
-        return mModel;
-    }
 
-    /*private ByteBuffer fillBuffer(DataInputStream dis, ){
-        verts = ByteBuffer.allocateDirect(floatsToRead * mBytesPerFloat);
-        verts.order(ByteOrder.nativeOrder());
-
-        for (int i = 0; i < floatsToRead; i++) {
-            float   readTmp = dis.readFloat();
-            verts.putFloat(readTmp);
+        switch (buffer_type)
+        {
+            case BUFFER_TYPE_VERTEX:
+                mModelVertices = vertices.asFloatBuffer();
+                mCountVertices = mCount / mPositionDataSize;
+                break;
+            case BUFFER_TYPE_TEXTURE_COORD:
+                mModelTextures = vertices.asFloatBuffer();
+                mCountTextures = mCount / mTextureDataSize;
+                break;
+            case BUFFER_TYPE_INDICES:
+                mModelIndices = vertices;
+                mCountIndices = mCount;
+                break;
+            case BUFFER_TYPE_NORMALS:
+                mModelNormals = vertices.asFloatBuffer();
+                mCountNormals = mCount / mNormalDataSize;
+            default:
+                break;
         }
-        verts.rewind();
-    }*/
-
-    public FloatBuffer loadDummTextureCordinate(){
-        final float[] cubeTextureCoordinateData =
-                {
-                        // Front face
-                        0.0f, 1-0.0f,
-                        0.0f, 1-1.0f,
-                        1.0f, 1-0.0f,
-                        1.0f, 1-0.0f,
-                        0.0f, 1-1.0f,
-                        1.0f, 1-1.0f,
-
-                        // Right face
-                        0.0f, 1-0.0f,
-                        0.0f, 1-1.0f,
-                        1.0f, 1-0.0f,
-                        1.0f, 1-0.0f,
-                        0.0f, 1-1.0f,
-                        1.0f, 1-1.0f,
-
-                        // Back face
-                        0.0f, 1-0.0f,
-                        0.0f, 1-1.0f,
-                        1.0f, 1-0.0f,
-                        1.0f, 1-0.0f,
-                        0.0f, 1-1.0f,
-                        1.0f, 1-1.0f,
-
-                        // Left face
-                        0.0f, 1-0.0f,
-                        0.0f, 1-1.0f,
-                        1.0f, 1-0.0f,
-                        1.0f, 1-0.0f,
-                        0.0f, 1-1.0f,
-                        1.0f, 1-1.0f,
-
-                        // Top face
-                        0.0f, 1-0.0f,
-                        0.0f, 1-1.0f,
-                        1.0f, 1-0.0f,
-                        1.0f, 1-0.0f,
-                        0.0f, 1-1.0f,
-                        1.0f, 1-1.0f,
-
-                        // Bottom face
-                        0.0f, 1-0.0f,
-                        0.0f, 1-1.0f,
-                        1.0f, 1-0.0f,
-                        1.0f, 1-0.0f,
-                        0.0f, 1-1.0f,
-                        1.0f, 1-1.0f,
-                };
-        mModel = ByteBuffer.allocateDirect(cubeTextureCoordinateData.length * mBytesPerFloat)
-                .order(ByteOrder.nativeOrder()).asFloatBuffer();
-        mModel.put(cubeTextureCoordinateData).position(0);
-        return mModel;
     }
+
     public int loadTexture(final Context context, final int resourceId) {
         final int[] textureHandle = new int[1];
 
@@ -179,8 +163,7 @@ public class MeshLoader {
         return textureHandle[0];
     }
 
-    public int loadTextureFromApk(String fileName,
-                                             AssetManager assets) {
+    public int loadTextureFromApk(String fileName, AssetManager assets) {
         InputStream inputStream = null;
         try
         {
@@ -204,10 +187,8 @@ public class MeshLoader {
         }
     }
 
-    public int loadTextureFromIntBuffer(int[] data, int width,
-                                                   int height)
-    {
-        // Convert:
+    private int loadTextureFromIntBuffer(int[] data, int width, int height) {
+        ByteBuffer mData;
         int numPixels = width * height;
         byte[] dataBytes = new byte[numPixels * 4];
 
@@ -262,17 +243,5 @@ public class MeshLoader {
 
         return textureHandle[0];
 
-    }
-
-    public int getmCount() {
-        return mCount;
-    }
-
-    public void setmBytesPerFloat(int mBytesPerFloat) {
-        this.mBytesPerFloat = mBytesPerFloat;
-    }
-
-    public void setmStrideBytes(int mStrideBytes) {
-        this.mStrideBytes = mStrideBytes;
     }
 }

@@ -7,9 +7,8 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -25,19 +24,18 @@ import com.vuforia.Matrix34F;
 import com.vuforia.MultiTarget;
 import com.vuforia.MultiTargetResult;
 import com.vuforia.ObjectTracker;
+import com.vuforia.STORAGE_TYPE;
 import com.vuforia.State;
 import com.vuforia.Tool;
 import com.vuforia.Tracker;
 import com.vuforia.TrackerManager;
 import com.vuforia.Vec3F;
 import com.vuforia.Vuforia;
-import com.vuforia.STORAGE_TYPE;
 
-
+import java.io.IOException;
 import java.util.Vector;
 
 import pl.lednica.arpark.R;
-import pl.lednica.arpark.object_recognition_engine.BowlAndSpoonObject;
 import pl.lednica.arpark.object_recognition_engine.ChurchObject;
 import pl.lednica.arpark.object_recognition_engine.LoadingDialogHandler;
 import pl.lednica.arpark.object_recognition_engine.MultiTargetRenderer;
@@ -286,7 +284,12 @@ public class ChurchActivity extends Activity implements SampleApplicationControl
         mGlView.init(translucent, depthSize, stencilSize);
 
         // Stworzenie w nim  renderera od renderowania :)
-        mRenderer = new MultiTargetRenderer(vuforiaAppSession, new ChurchObject());
+        try {
+            mRenderer = new MultiTargetRenderer(vuforiaAppSession, new ChurchObject(getResources().getAssets()));
+        }catch (IOException e){
+            Log.e(LOGTAG,"IOException load church model");
+        }
+
         mRenderer.setTextures(mTextures);
         mGlView.setRenderer(mRenderer);
 
