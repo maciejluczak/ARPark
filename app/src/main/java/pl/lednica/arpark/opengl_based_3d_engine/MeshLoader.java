@@ -12,7 +12,6 @@ import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -30,7 +29,7 @@ public class MeshLoader {
     public FloatBuffer mModelColors;
     public FloatBuffer mModelNormals;
     public FloatBuffer mModelTextures;
-    public Buffer mModelIndices;
+    public ByteBuffer mModelIndices;
 
     public int mCountVertices=0;
     public int mCountColors=0;
@@ -112,18 +111,22 @@ public class MeshLoader {
             case BUFFER_TYPE_VERTEX:
                 mModelVertices = vertices.asFloatBuffer();
                 mCountVertices = mCount / mPositionDataSize;
+                Log.e(LOGTAG,"Count V: "+ mCountVertices);
                 break;
             case BUFFER_TYPE_TEXTURE_COORD:
                 mModelTextures = vertices.asFloatBuffer();
                 mCountTextures = mCount / mTextureDataSize;
+                Log.e(LOGTAG,"Count T: "+ mCountTextures);
                 break;
             case BUFFER_TYPE_INDICES:
                 mModelIndices = vertices;
                 mCountIndices = mCount;
+                Log.e(LOGTAG,"Count I: "+ mCountIndices);
                 break;
             case BUFFER_TYPE_NORMALS:
                 mModelNormals = vertices.asFloatBuffer();
                 mCountNormals = mCount / mNormalDataSize;
+                Log.e(LOGTAG,"Count N: "+ mCountNormals);
             default:
                 break;
         }

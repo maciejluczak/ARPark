@@ -23,6 +23,7 @@ public class Object3DViewActivity extends Activity {
 
     private GLSurfaceView mGLSurfaceView;
     private static final String LOGTAG = "Object3DViewActivity";
+    private SimpleLightColorRenderer renderer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +40,9 @@ public class Object3DViewActivity extends Activity {
             mGLSurfaceView.setEGLContextClientVersion(2);
 
             //Ustawienie odpowiedniej klasy jako Renderera
-            mGLSurfaceView.setRenderer( new SimpleLightColorRenderer(this) );
-
+            renderer = new SimpleLightColorRenderer(this);
+            mGLSurfaceView.setRenderer( renderer );
+            //mGLSurfaceView.setRenderer( new DummRenderer(this) );
         }
         else
         {
@@ -69,6 +71,13 @@ public class Object3DViewActivity extends Activity {
     @Override
     protected void onPause() {
         mGLSurfaceView.onPause();
+        renderer.releaseBuffers();
         super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        renderer.releaseBuffers();
+        super.onStop();
     }
 }
