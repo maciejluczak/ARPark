@@ -16,14 +16,15 @@ import android.os.Bundle;
 import android.util.Log;
 
 import pl.lednica.arpark.R;
-import pl.lednica.arpark.opengl_based_3d_engine.SimpleLightColorRenderer;
+import pl.lednica.arpark.opengl_based_3d_engine.CottageObject;
+import pl.lednica.arpark.opengl_based_3d_engine.LightTextureRenderer;
 
 
 public class Object3DViewActivity extends Activity {
 
     private GLSurfaceView mGLSurfaceView;
     private static final String LOGTAG = "Object3DViewActivity";
-    private SimpleLightColorRenderer renderer;
+    private LightTextureRenderer renderer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +41,9 @@ public class Object3DViewActivity extends Activity {
             mGLSurfaceView.setEGLContextClientVersion(2);
 
             //Ustawienie odpowiedniej klasy jako Renderera
-            renderer = new SimpleLightColorRenderer(this);
+            //renderer = new LightTextureRenderer(this);
+            renderer = new CottageObject(this);
+            //renderer = new CompostelaObject(this);
             mGLSurfaceView.setRenderer( renderer );
             //mGLSurfaceView.setRenderer( new DummRenderer(this) );
         }
@@ -71,7 +74,6 @@ public class Object3DViewActivity extends Activity {
     @Override
     protected void onPause() {
         mGLSurfaceView.onPause();
-        renderer.releaseBuffers();
         super.onPause();
     }
 

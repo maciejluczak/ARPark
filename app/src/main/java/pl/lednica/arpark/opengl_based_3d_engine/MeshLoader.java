@@ -37,6 +37,11 @@ public class MeshLoader {
     public int mCountTextures=0;
     public int mCountIndices=0;
 
+    int mCubePositionsBufferIdx;
+    int mCubeNormalsBufferIdx;
+    int mCubeTexCoordsBufferIdx;
+    int mCubeIndicesBufferIdx;
+
     public final int mBytesPerFloat = 4;
     public final int mBytesPerShort = 2;
 
@@ -44,6 +49,7 @@ public class MeshLoader {
     public final int mColorDataSize = 4;
     public final int mNormalDataSize = 3;
     public final int mTextureDataSize = 2;
+
 
 
     public final int mStrideBytesVertex = mPositionDataSize * mBytesPerFloat;
@@ -93,8 +99,8 @@ public class MeshLoader {
                     vertices.putFloat(readTmp);
                 }
                 if(buffer_data_type == BUFFER_DATA_TYPE.DATA_SHORT) {
-                    short readTmp = dis.readShort();
-                    vertices.putShort(readTmp);
+                    int readTmp = dis.readUnsignedShort();
+                    vertices.putChar((char) readTmp);
                 }
             }
             vertices.rewind();
