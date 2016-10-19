@@ -17,6 +17,7 @@ import android.util.Log;
 
 import pl.lednica.arpark.R;
 import pl.lednica.arpark.opengl_based_3d_engine.CottageObject;
+import pl.lednica.arpark.opengl_based_3d_engine.LightColorRenderer;
 import pl.lednica.arpark.opengl_based_3d_engine.LightTextureRenderer;
 
 
@@ -25,6 +26,7 @@ public class Object3DViewActivity extends Activity {
     private GLSurfaceView mGLSurfaceView;
     private static final String LOGTAG = "Object3DViewActivity";
     private LightTextureRenderer renderer;
+    private LightColorRenderer rendererColor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,9 +43,9 @@ public class Object3DViewActivity extends Activity {
             mGLSurfaceView.setEGLContextClientVersion(2);
 
             //Ustawienie odpowiedniej klasy jako Renderera
-            //renderer = new LightTextureRenderer(this);
             renderer = new CottageObject(this);
-            //renderer = new CompostelaObject(this);
+            //renderer = new ChurchObjectFiles(this);
+            //rendererColor = new LightColorRenderer(this);
             mGLSurfaceView.setRenderer( renderer );
             //mGLSurfaceView.setRenderer( new DummRenderer(this) );
         }
@@ -79,7 +81,8 @@ public class Object3DViewActivity extends Activity {
 
     @Override
     protected void onStop() {
-        renderer.releaseBuffers();
+        if(renderer != null)
+            renderer.releaseBuffers();
         super.onStop();
     }
 }

@@ -13,7 +13,6 @@ public class CompostelaObject extends LightTextureRenderer{
 
     public CompostelaObject(Object3DViewActivity activity) {
         super(activity);
-        renderer_type = RENDERER_TYPE.COLOR_RENDERER;
         String path = "Compostela";
         String model = "cross";
         String[] modelObjects = new String[]{"cross"};

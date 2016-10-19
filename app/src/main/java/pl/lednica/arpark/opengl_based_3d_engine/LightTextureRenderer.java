@@ -67,11 +67,6 @@ public class LightTextureRenderer implements GLSurfaceView.Renderer {
     /** This is a handle to our light point program. */
     private int mPointProgramHandle;
 
-    public enum RENDERER_TYPE
-    {
-        TEXTURE_RENDERER, COLOR_RENDERER
-    }
-    public RENDERER_TYPE renderer_type;
 
     public LightTextureRenderer(Object3DViewActivity activity) {
         mActivity = activity;

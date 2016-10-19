@@ -46,7 +46,7 @@ public class MeshLoader {
     public final int mBytesPerShort = 2;
 
     public final int mPositionDataSize = 3;
-    public final int mColorDataSize = 4;
+    public final int mColorDataSize = 7;
     public final int mNormalDataSize = 3;
     public final int mTextureDataSize = 2;
 
@@ -65,7 +65,7 @@ public class MeshLoader {
 
     public enum BUFFER_TYPE
     {
-        BUFFER_TYPE_VERTEX, BUFFER_TYPE_TEXTURE_COORD, BUFFER_TYPE_NORMALS, BUFFER_TYPE_INDICES
+        BUFFER_TYPE_VERTEX, BUFFER_TYPE_TEXTURE_COORD, BUFFER_TYPE_NORMALS, BUFFER_TYPE_INDICES, BUFFER_TYPE_COLOR
     }
     public enum BUFFER_DATA_TYPE
     {
@@ -133,6 +133,9 @@ public class MeshLoader {
                 mModelNormals = vertices.asFloatBuffer();
                 mCountNormals = mCount / mNormalDataSize;
                 Log.e(LOGTAG,"Count N: "+ mCountNormals);
+            case BUFFER_TYPE_COLOR:
+                mModelColors = vertices.asFloatBuffer();
+                mCountColors = mCount / mColorDataSize;
             default:
                 break;
         }
