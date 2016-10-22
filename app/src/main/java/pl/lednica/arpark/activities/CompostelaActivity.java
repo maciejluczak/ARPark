@@ -36,6 +36,7 @@ import javax.microedition.khronos.egl.EGLDisplay;
 import pl.lednica.arpark.R;
 import pl.lednica.arpark.sensor_engine.CameraView;
 import pl.lednica.arpark.sensor_engine.SensorCameraViewRenderer;
+import pl.lednica.arpark.sensor_engine.SensorData;
 
 public class CompostelaActivity extends Activity
         implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks, LocationListener,
@@ -50,7 +51,7 @@ public class CompostelaActivity extends Activity
 
     //Variables to Localisation
     private GoogleApiClient mGoogleApiClient;
-    private Location mLocation;
+    //private Location mLocation;
     private LocationRequest mLocationRequest;
     private String mLastUpdateTime;
 
@@ -59,9 +60,11 @@ public class CompostelaActivity extends Activity
     private Sensor accelSensor;
     private Sensor compassSensor;
     private Sensor gyroSensor;
-    private float[] accelerometrData = new float[3];
-    private float[] geomagneticData= new float[3];
-    private float[] gyroscopeData= new float[3];
+    //private float[] accelerometrData = new float[3];
+    //private float[] geomagneticData= new float[3];
+    //private float[] gyroscopeData= new float[3];
+
+    SensorData sensorData = new SensorData();
 
     public static final String ACCELEROMETR_HISTORY_LOG_X = "accelerometr_history_x.csv";
     public static final String ACCELEROMETR_HISTORY_LOG_Y = "accelerometr_history_y.csv";
@@ -206,7 +209,8 @@ public class CompostelaActivity extends Activity
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
         //mLatitudeTextView.setText(String.valueOf(location.getLatitude()));
         //mLongitudeTextView.setText(String.valueOf(location.getLongitude()));
-        mLocation = location;
+        //mLocation = location;
+        sensorData.setLocation(location);
         Toast.makeText(this, "Updated: " + mLastUpdateTime, Toast.LENGTH_SHORT).show();
     }
 
@@ -218,7 +222,8 @@ public class CompostelaActivity extends Activity
         switch(event.sensor.getType())
         {
             case Sensor.TYPE_ACCELEROMETER:
-                accelerometrData = event.values;
+                //accelerometrData = event.values;
+                sensorData.setSensorData(event.values,Sensor.TYPE_ACCELEROMETER);
                 //accelerometrData[0] = 0.2f * event.values[0] + (1.0f - 0.2f) * accelerometrData[0];
                 //accelerometrData[1] = 0.2f * event.values[1] + (1.0f - 0.2f) * accelerometrData[1];
                 //accelerometrData[2] = 0.2f * event.values[2] + (1.0f - 0.2f) * accelerometrData[2];
@@ -241,9 +246,10 @@ public class CompostelaActivity extends Activity
                 break;
             case Sensor.TYPE_GYROSCOPE:
                 //gyroscopeData = event.values;
-                gyroscopeData[0] = 0.2f * event.values[0] + (1.0f - 0.2f) * gyroscopeData[0];
-                gyroscopeData[1] = 0.2f * event.values[1] + (1.0f - 0.2f) * gyroscopeData[1];
-                gyroscopeData[2] = 0.2f * event.values[2] + (1.0f - 0.2f) * gyroscopeData[2];
+                sensorData.setSensorData(event.values,Sensor.TYPE_GYROSCOPE);
+                //gyroscopeData[0] = 0.2f * event.values[0] + (1.0f - 0.2f) * gyroscopeData[0];
+                //gyroscopeData[1] = 0.2f * event.values[1] + (1.0f - 0.2f) * gyroscopeData[1];
+                //gyroscopeData[2] = 0.2f * event.values[2] + (1.0f - 0.2f) * gyroscopeData[2];
                 /*try {
                     outputStream = openFileOutput(GYROSCOPE_HISTORY_LOG_X, Context.MODE_APPEND);
                     tmpVal = String.valueOf(gyroscopeData[0]) + ";";
@@ -262,7 +268,8 @@ public class CompostelaActivity extends Activity
                 }*/
                 break;
             case Sensor.TYPE_MAGNETIC_FIELD:
-                geomagneticData = event.values;
+                //geomagneticData = event.values;
+                sensorData.setSensorData(event.values,Sensor.TYPE_MAGNETIC_FIELD);
                 //geomagneticData[0] = 0.2f * event.values[0] + (1.0f - 0.2f) * geomagneticData[0];
                 //geomagneticData[1] = 0.2f * event.values[1] + (1.0f - 0.2f) * geomagneticData[1];
                 //geomagneticData[2] = 0.2f * event.values[2] + (1.0f - 0.2f) * geomagneticData[2];
@@ -291,7 +298,7 @@ public class CompostelaActivity extends Activity
         Toast.makeText(this, "Accuracy: " + accuracy, Toast.LENGTH_LONG).show();
     }
 
-    public float[] getAccelerometrData(){
+    /*public float[] getAccelerometrData(){
         return accelerometrData;
     }
     public float[] getGeomagneticData(){
@@ -302,7 +309,13 @@ public class CompostelaActivity extends Activity
     }
     public Location getmLocation(){
         return mLocation;
+    }*/
+
+    public SensorData getSensorData() {
+        return sensorData;
     }
+
+
     // The config chooser.
     private static class ConfigChooser implements
             GLSurfaceView.EGLConfigChooser

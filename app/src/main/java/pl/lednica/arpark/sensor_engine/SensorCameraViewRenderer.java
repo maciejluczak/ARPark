@@ -1,7 +1,6 @@
 package pl.lednica.arpark.sensor_engine;
 
 import android.content.res.AssetManager;
-import android.hardware.SensorManager;
 import android.location.Location;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
@@ -34,12 +33,12 @@ public class SensorCameraViewRenderer implements GLSurfaceView.Renderer{
     public static final String ORIENTATION_ORGINAL = "orientation_orginal.csv";
     public static final String ORIENTATION_FILTERED = "orientation_filtered";
 
-    public final static Location mountWashington = new Location("manual");
+    /*public final static Location mountWashington = new Location("manual");
     static {
         mountWashington.setLatitude(42.869466d);
         mountWashington.setLongitude(-8.547657d);
         mountWashington.setAltitude(50.0d);
-    }
+    }*/
 
     private int widthT,heightT;
     private float glFOV;
@@ -183,7 +182,7 @@ public class SensorCameraViewRenderer implements GLSurfaceView.Renderer{
     }
     public void onDrawFrame( GL10 gl ) {
         // compute rotation matrix
-        float rotation[] = new float[9];
+        /*float rotation[] = new float[9];
         float identity[] = new float[9];
         float orientation[] = new float[3];
         boolean gotRotation = SensorManager.getRotationMatrix(rotation,
@@ -199,7 +198,12 @@ public class SensorCameraViewRenderer implements GLSurfaceView.Renderer{
             SensorManager.getOrientation(cameraRotation, orientation);
             Log.e(LOGTAG,"x: "+ (float)Math.toDegrees(orientation[0]) +" y "+
                     (float)Math.toDegrees(orientation[1]) +" z "+ (float)Math.toDegrees(orientation[2]));
-        }
+        }*/
+
+        float orientation[] = mActivity.getSensorData().getOrientation();
+        Location location = mActivity.getSensorData().getLocation();
+
+        Location targetLocation = CompostelaGeo.getGeoData();
 
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
@@ -213,14 +217,14 @@ public class SensorCameraViewRenderer implements GLSurfaceView.Renderer{
         float dx = 0.0f;
         float dz = 0.0f;
         try {
-            curBearingToMW = mActivity.getmLocation().bearingTo(mountWashington);
+            curBearingToMW = location.bearingTo(targetLocation);
 
-            double latitudeDelta = mountWashington.getLatitude() - mActivity.getmLocation().getLatitude();
-            double longitudeDelta = mountWashington.getLongitude() - mActivity.getmLocation().getLongitude();
+            double latitudeDelta = targetLocation.getLatitude() - location.getLatitude();
+            double longitudeDelta = targetLocation.getLongitude() - location.getLongitude();
             double a =  Math.sin(latitudeDelta/2)*Math.sin(latitudeDelta/2) +
                        Math.sin(longitudeDelta/2)*Math.sin(longitudeDelta/2) *
-                       Math.cos(mountWashington.getLatitude()) *
-                       Math.cos(mActivity.getmLocation().getLatitude());
+                       Math.cos(targetLocation.getLatitude()) *
+                       Math.cos(location.getLatitude());
             double b  = 2* Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
             double d = 6471 * b;
             dx = (float)(d * Math.cos(curBearingToMW));
