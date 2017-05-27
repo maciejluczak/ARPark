@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context="pl.lednica.arpark.activities.object_explorer.ObjectExplorerListFragment"
+    android:id="@+id/fragment_object_explorer">
+
+    <ImageView
+        android:id="@+id/info_image"
+        android:layout_width="230dp"
+        android:layout_height="230dp"
+        android:layout_marginStart="17dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:id="@+id/info_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/info_image"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="25dp"
+        android:layout_toEndOf="@+id/info_image"
+        tools:text="Nazwa ogólna obiektu" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/info_image">
+        <TextView
+            android:id="@+id/info_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/text_margin"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            tools:text="Domy naziemne w konstrukcji w zrąb budowano w strefie leśnej lub wszędzie tam, gdzie słaba spoistość podłoża nie pozwalała na zagłębienie chaty. Słowianie znali też konstrukcję słupową, w której między słupami ścian znajdowała się plecionka oblepiona gliną. Jedynym śladem takich konstrukcji są często owalne, płytkie jamy z paleniskami. Konstrukcja naziemna – zrębowa i słupowa – wymagała specjalnego przygotowania więźby dachowej. W tym celu stosowano sochy lub półsuchy, podtrzymujące od strony ścian szczytowych belkę, do której przymocowuje się krokwie. Dach pokrywano trzciną lub słomą. Domy naziemne budowano bez podpiwniczenia, choć często zaopatrywano w podłogi z dranic bądź wylepiano ich powierzchnie gliną. Maksymalny czas użytkowania takich konstrukcji wynosił około 25 lat" />
+    </ScrollView>
+</RelativeLayout>
+
+
+<!--<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:minHeight="?android:attr/listPreferredItemHeight"
+android:paddingBottom="12dp"
+android:paddingLeft="16dp"
+android:paddingRight="16dp"
+android:paddingTop="12dp">
+
+<TextView
+    android:id="@+id/info_namerec"
+    android:layout_width="350dp"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="-8dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+    android:layout_marginStart="8dp"
+    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintHorizontal_bias="0.0"
+    app:layout_constraintLeft_toRightOf="@+id/info_image"
+    app:layout_constraintRight_toRightOf="parent"
+    tools:text="Domy naziemne w konstrukcji w zrąb budowano w strefie leśnej lub wszędzie tam, gdzie słaba spoistość podłoża nie pozwalała na zagłębienie chaty. Słowianie znali też konstrukcję słupową, w której między słupami ścian znajdowała się plecionka oblepiona gliną. Jedynym śladem takich konstrukcji są często owalne, płytkie jamy z paleniskami. Konstrukcja naziemna – zrębowa i słupowa – wymagała specjalnego przygotowania więźby dachowej. W tym celu stosowano sochy lub półsuchy, podtrzymujące od strony ścian szczytowych belkę, do której przymocowuje się krokwie. Dach pokrywano trzciną lub słomą. Domy naziemne budowano bez podpiwniczenia, choć często zaopatrywano w podłogi z dranic bądź wylepiano ich powierzchnie gliną. Maksymalny czas użytkowania takich konstrukcji wynosił około 25 lat" />
+
+
+<ImageView
+    android:id="@+id/info_imagerec"
+    android:layout_width="160dp"
+    android:layout_height="160dp"
+    android:layout_marginBottom="8dp"
+    android:layout_marginLeft="16dp"
+    android:layout_marginTop="20dp"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintVertical_bias="0.44"
+    app:srcCompat="@drawable/kosciol" />
+
+<android.support.constraint.Guideline
+    android:id="@+id/guideline"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    app:layout_constraintGuide_end="84dp" />
+
+</android.support.constraint.ConstraintLayout>-->

@@ -1,0 +1,120 @@
+{
+  "objects": [
+    {
+      "name": "Chata",
+      "position": {
+        "lat": 17.378869,
+        "long": 52.527116
+      },
+      "model": {
+        "meta": {
+          "name": "cottageClear",
+          "path": "Cottage",
+          "textureImage": "cottage_texture.png",
+          "scale": "8.0"
+        },
+        "mesh": [
+          {
+            "name": "parter"
+          },
+          {
+            "name": "Belki"
+          },
+          {
+            "name": "dach1"
+          },
+          {
+            "name": "dach2"
+          }
+        ]
+      },
+      "details": {
+        "description": "Chata chłopska okresu wczesnopiastowskiego",
+        "icon": "chatka_foto",
+        "information": [
+          {
+            "name": "Podgrodzie",
+            "text": "Jednolitą przestrzeń wnętrza grodu podzielono na gród wewnętrzny, dodatkowo umacniany, przeznaczony dla pana grodowego i jego drużyny oraz gród właściwy, zamieszkany przez ludność rzemieślniczo-kupiecką. Właśnie na podgrodziu skupione były różne rzemiosła, co pociągało za sobą ustalenie w tym miejscu targu, ściągającego nie tylko okoliczną ludność rolnicza, ale i zawodowych kupców obsługujących oddalone od siebie dzielnice i kraje. Rzemiosłu stwarzało to warunki, aby produkować już nie tylko na konkretne zamówienie, lecz na rynek dla nieznanego odbiorcy.",
+            "image": "chatka_foto.jpg"
+          },
+          {
+            "name": "Budownictwo",
+            "text": "Domy naziemne w konstrukcji w zrąb budowano w strefie leśnej lub wszędzie tam, gdzie słaba spoistość podłoża nie pozwalała na zagłębienie chaty. Słowianie znali też konstrukcję słupową, w której między słupami ścian znajdowała się plecionka oblepiona gliną. Jedynym śladem takich konstrukcji są często owalne, płytkie jamy z paleniskami. Konstrukcja naziemna – zrębowa i słupowa – wymagała specjalnego przygotowania więźby dachowej. W tym celu stosowano sochy lub półsuchy, podtrzymujące od strony ścian szczytowych belkę, do której przymocowuje się krokwie. Dach pokrywano trzciną lub słomą. Domy naziemne budowano bez podpiwniczenia, choć często zaopatrywano w podłogi z dranic bądź wylepiano ich powierzchnie gliną. Maksymalny czas użytkowania takich konstrukcji wynosił około 25 lat.",
+            "image":"chatka.png"
+          },
+          {
+            "name": "Przypis",
+            "text": "Teksty pochodzą z strony http://stara.loplonsk.pl/gazszk/piast.pdf"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Grób pielgrzyma",
+      "position": {
+        "lat": 17.37759,
+        "long": 52.52590
+      },
+      "model": {
+        "meta": {
+          "name": "cross",
+          "path": "Compostela",
+          "scale": "1.0"
+        },
+        "mesh": [
+          {
+            "name": "cross"
+          }
+        ]
+      },
+      "details": {
+        "description": "Odnalezienie na ostrowie lednickim muszli pielgrzyma, będącej znakiem ludzi udających się do Santiago de Compostela",
+        "icon": "pielgrzym_foto",
+        "information": [
+          {
+            "name": "Santiago de Compostella",
+            "text": "Miejscowość znajdująco się w Hiszpanni opodal wybrzeża Oceanu Atlantyckiego. Jest miejscem pochówku św. Jakuba Większego, będącego uczniem Jezusa Chrystusa. Z tego powodu Od wczesnego średniowiecza miejsce to jest celem licznych pielgrzymek. Ludzie docierający do Santiago otrzymywali w nagrodę muszlę. Odnalezienie owej charakterystycznej muszli w grobie na Ostrowie Lednickim pozwala domniemywać, że osoba pochowana w tym miejscu musiała za życia dotrzeć do grobu św Jakuba."
+          },
+          {
+            "name": "Krzyż św. Jakuba",
+            "text": "Sw. Jakub Większy ponisł śmierć męczęńską poprzez ucięcie głowy. Z tego powodu krzyż św. Jakuba przypomina kształtem miecz o raminach zakończonych kwiatami lilii. Kwiaty te symbolizują świętość. Oprócz muszli krzyż ten stał się symbolem piegrzymów podążających do Santiag de Compostela. "
+          }
+        ]
+      }
+    },
+    {
+      "name": "Kościół",
+      "position": {
+        "lat": 17.377378,
+        "long": 52.5263
+      },
+      "model": {
+        "meta": {
+          "name": "kosciol-lednica",
+          "path": "Church",
+          "textureImage": "kosciol_tekstura.png",
+          "scale": "2.0"
+        },
+        "mesh": [
+          {
+            "name": "Cube"
+          }
+        ]
+      },
+      "details": {
+        "description": "Kammieny kościół grodowy",
+        "icon": "kosciol_foto",
+        "information": [
+          {
+            "name": "Opis",
+            "text": "Wzniesiony został z otoczaków kamiennych w północnej części grodu, w pobliżu bramy prowadzącej do jego wnętrza. Orientowany, jednonawowy (długości 13,5 m), z prostokątnym prezbiterium i dwoma aneksami od północy, ma we wnętrzu dwa kamienne grobowce, prawdopodobnie miejsca ostatniego spoczynku synów Bolesława Chrobrego. Kościół ten można zaliczyć do jednej z pierwszej nekropolii książęcych na ziemiach polskich."
+          },
+          {
+            "name": "Przypisy",
+            "text": "Informacje zostały zacytowane z strony https://pl.wikipedia.org/wiki/Ostr%C3%B3w_Lednicki"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -2,7 +2,7 @@ package pl.lednica.arpark.opengl_based_3d_engine;
 
 import java.util.Vector;
 
-import pl.lednica.arpark.activities.Object3DViewActivity;
+import pl.lednica.arpark.activities.object_explorer.ObjectExplorer3DActivity;
 
 /**
  * Created by Maciej on 2016-10-18.
@@ -11,7 +11,7 @@ import pl.lednica.arpark.activities.Object3DViewActivity;
 public class CompostelaObject extends LightTextureRenderer{
     public Vector<ObjectFiles> objectFilesVector = new Vector<>();
 
-    public CompostelaObject(Object3DViewActivity activity) {
+    public CompostelaObject(ObjectExplorer3DActivity activity) {
         super(activity);
         String path = "Compostela";
         String model = "cross";

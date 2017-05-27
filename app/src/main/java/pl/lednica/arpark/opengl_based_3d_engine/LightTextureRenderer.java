@@ -13,7 +13,7 @@ import java.util.Vector;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import pl.lednica.arpark.activities.Object3DViewActivity;
+import pl.lednica.arpark.activities.object_explorer.ObjectExplorer3DActivity;
 
 /**
  * Created by Maciej on 2016-09-24.
@@ -24,6 +24,7 @@ public class LightTextureRenderer implements GLSurfaceView.Renderer {
 
     private static final String LOGTAG = "SLCRenderer";
 
+    private float scale;
     /** macierz modelu transformuje obiekt z przestrzeni modelu do przestrzeni świata */
     private float[] mModelMatrix = new float[16];
 
@@ -42,7 +43,7 @@ public class LightTextureRenderer implements GLSurfaceView.Renderer {
     /** Dane modelu będą przechowywane w postaci float buffer. */
     private Vector<MeshLoader> meshObjects = new Vector<>();
 
-    private Object3DViewActivity mActivity;
+    private ObjectExplorer3DActivity mActivity;
     private AssetManager mAssetMenager;
 
     private int mMVPMatrixHandle;
@@ -67,11 +68,14 @@ public class LightTextureRenderer implements GLSurfaceView.Renderer {
     /** This is a handle to our light point program. */
     private int mPointProgramHandle;
 
+    public volatile float mAngle;
 
-    public LightTextureRenderer(Object3DViewActivity activity) {
+
+    public LightTextureRenderer(ObjectExplorer3DActivity activity) {
         mActivity = activity;
         mAssetMenager = mActivity.getResources().getAssets();
     }
+
 
     public void loadMesh(int i,ObjectFiles objectFiles){
         textureImageFile = objectFiles.file_texture_image;
@@ -261,7 +265,7 @@ public class LightTextureRenderer implements GLSurfaceView.Renderer {
 
         // Calculate position of the light. Rotate and then push into the distance.
         Matrix.setIdentityM(mLightModelMatrix, 0);
-        Matrix.translateM(mLightModelMatrix, 0, 0.0f, 0.0f, -8.0f);
+        Matrix.translateM(mLightModelMatrix, 0, 0.0f, 0.0f, -scale);
 
         Matrix.multiplyMV(mLightPosInWorldSpace, 0, mLightModelMatrix, 0, mLightPosInModelSpace, 0);
         Matrix.multiplyMV(mLightPosInEyeSpace, 0, mViewMatrix, 0, mLightPosInWorldSpace, 0);
@@ -269,8 +273,8 @@ public class LightTextureRenderer implements GLSurfaceView.Renderer {
 
         for(MeshLoader mesh : meshObjects) {
             Matrix.setIdentityM(mModelMatrix, 0);
-            Matrix.translateM(mModelMatrix, 0, 0.0f, 0.0f, -8.0f);
-            Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 0.0f, 1.0f, 0.0f);
+            Matrix.translateM(mModelMatrix, 0, 0.0f, -1.0f, -scale);
+            Matrix.rotateM(mModelMatrix, 0, mAngle, 0.0f, 1.0f, 0.0f);
             drawModel(mesh, mesh.mCubePositionsBufferIdx, mesh.mCubeNormalsBufferIdx,
                     mesh.mCubeTexCoordsBufferIdx, mesh.mCubeIndicesBufferIdx);
         }
@@ -459,5 +463,17 @@ public class LightTextureRenderer implements GLSurfaceView.Renderer {
             mesh.mCubePositionsBufferIdx = 0;
             mesh.mCubePositionsBufferIdx = 0;
         }
+    }
+
+    public float getAngle() {
+        return mAngle;
+    }
+
+    public void setAngle(float angle) {
+        mAngle = angle;
+    }
+
+    public void setScale(float scale){
+        this.scale = scale;
     }
 }

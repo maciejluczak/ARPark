@@ -45,4 +45,6 @@
     <string name="overlay_build_target_help">Hold the device parallel to the target</string>
     <string name="target_quality_error_title">Low Quality Image</string>
     <string name="target_quality_error_desc">The image has very little detail, please try another.</string>
+
+    <string name="ObjectExplorerTitle">Przeglądarka obiektów</string>
 </resources>

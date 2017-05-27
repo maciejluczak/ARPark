@@ -11,7 +11,7 @@ import java.nio.FloatBuffer;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import pl.lednica.arpark.activities.Object3DViewActivity;
+import pl.lednica.arpark.activities.object_explorer.ObjectExplorer3DActivity;
 
 /**
  * Created by Maciej on 2016-09-24.
@@ -35,7 +35,7 @@ public class LightColorRenderer implements GLSurfaceView.Renderer {
     private FloatBuffer mModelVertices;
     private MeshLoader meschObject;
 
-    private Object3DViewActivity mActivity;
+    private ObjectExplorer3DActivity mActivity;
     private static String filename = "Compostela/crossModel.dat";
 
     private int mMVPMatrixHandle;
@@ -56,7 +56,7 @@ public class LightColorRenderer implements GLSurfaceView.Renderer {
     /** Size of the color data in elements. */
     private final int mColorDataSize = 4;
 
-    public LightColorRenderer(Object3DViewActivity activity) {
+    public LightColorRenderer(ObjectExplorer3DActivity activity) {
         mActivity = activity;
         meschObject = new MeshLoader();
         try {

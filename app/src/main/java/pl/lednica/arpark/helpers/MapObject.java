@@ -10,6 +10,7 @@ import pl.lednica.arpark.R;
 /**
  * Created by stachu on 21.09.2016.
  */
+
 public class MapObject {
     public int x;
     public int y;
@@ -25,4 +26,6 @@ public class MapObject {
         name = nameIn;
         activityClass = classIn;
     }
+
+
 }

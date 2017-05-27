@@ -25,6 +25,7 @@ import java.text.DateFormat;
 import java.util.Date;
 
 import pl.lednica.arpark.R;
+import pl.lednica.arpark.activities.object_explorer.ObjectExplorerTabActivity;
 import pl.lednica.arpark.animations.ButtonAnimation;
 import pl.lednica.arpark.helpers.MapObject;
 import pl.lednica.arpark.helpers.MapPosition;
@@ -110,7 +111,7 @@ public class MainActivity extends Activity
         object3DViewButton = (Button) findViewById(R.id.object3DViewButton);
         object3DViewButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), Object3DViewActivity.class);
+                Intent intent = new Intent(getApplicationContext(), ObjectExplorerTabActivity.class);
                 startActivity(intent);
                 overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
                 finish();
@@ -182,7 +183,7 @@ public class MainActivity extends Activity
 
     @Override
     public void onConnectionSuspended(int i) {
-        Log.i("LocationFinderFragment", "Connection Suspended");
+        Log.i("LocationFinder", "Connection Suspended");
         mGoogleApiClient.connect();
     }
 
@@ -198,6 +199,6 @@ public class MainActivity extends Activity
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.i("LocationFinderFragment", "Connection failed. Error: " + connectionResult.getErrorCode());
+        Log.i("LocationFinder", "Connection failed. Error: " + connectionResult.getErrorCode());
     }
 }

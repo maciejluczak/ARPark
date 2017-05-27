@@ -2,7 +2,7 @@ package pl.lednica.arpark.opengl_based_3d_engine;
 
 import java.util.Vector;
 
-import pl.lednica.arpark.activities.Object3DViewActivity;
+import pl.lednica.arpark.activities.object_explorer.ObjectExplorer3DActivity;
 
 /**
  * Created by Maciej on 2016-10-19.
@@ -11,7 +11,7 @@ import pl.lednica.arpark.activities.Object3DViewActivity;
 public class ChurchObjectFiles extends LightTextureRenderer{
     public Vector<ObjectFiles> objectFilesVector = new Vector<>();
 
-    public ChurchObjectFiles(Object3DViewActivity activity) {
+    public ChurchObjectFiles(ObjectExplorer3DActivity activity) {
         super(activity);
         String path = "Church";
         String model = "kosciol-lednica";
@@ -19,10 +19,10 @@ public class ChurchObjectFiles extends LightTextureRenderer{
         String[] modelObjects = new String[]{"Cube"};
         for(String obj : modelObjects) {
             objectFilesVector.add(new ObjectFiles(
-                    path + "/" + model + "_" + obj + "_v_Model.dat",
-                    path + "/" + model + "_" + obj + "_n_Model.dat",
-                    path + "/" + model + "_" + obj + "_t_Model.dat",
-                    path + "/" + model + "_" + obj + "_i_Model.dat",
+                    path + "/" + model + "_" + obj + "_1_v_Model.dat",
+                    path + "/" + model + "_" + obj + "_1_n_Model.dat",
+                    path + "/" + model + "_" + obj + "_1_t_Model.dat",
+                    path + "/" + model + "_" + obj + "_1_i_Model.dat",
                     path+"/"+textureImage
             ));
         }
