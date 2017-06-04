@@ -12,7 +12,7 @@ public class ChurchObjectFiles extends LightTextureRenderer{
     public Vector<ObjectFiles> objectFilesVector = new Vector<>();
 
     public ChurchObjectFiles(ObjectExplorer3DActivity activity) {
-        super(activity);
+        super(activity,true);
         String path = "Church";
         String model = "kosciol-lednica";
         String textureImage = "kosciol_tekstura.png";

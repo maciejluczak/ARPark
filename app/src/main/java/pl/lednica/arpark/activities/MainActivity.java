@@ -22,6 +22,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import pl.lednica.arpark.R;
@@ -29,6 +30,8 @@ import pl.lednica.arpark.activities.object_explorer.ObjectExplorerTabActivity;
 import pl.lednica.arpark.animations.ButtonAnimation;
 import pl.lednica.arpark.helpers.MapObject;
 import pl.lednica.arpark.helpers.MapPosition;
+import pl.lednica.arpark.helpers.ObjectJsonUtils;
+import pl.lednica.arpark.helpers.ObjectModel;
 
 public class MainActivity extends Activity
         implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks, LocationListener{

@@ -24,44 +24,35 @@ import static java.sql.Types.NULL;
  */
 
 public class MeshLoader {
-
-    public FloatBuffer mModelVertices;
-    public FloatBuffer mModelColors;
-    public FloatBuffer mModelNormals;
-    public FloatBuffer mModelTextures;
-    public ByteBuffer mModelIndices;
-
-    public int mCountVertices=0;
-    public int mCountColors=0;
-    public int mCountNormals=0;
-    public int mCountTextures=0;
-    public int mCountIndices=0;
-
-    int mCubePositionsBufferIdx;
-    int mCubeNormalsBufferIdx;
-    int mCubeTexCoordsBufferIdx;
-    int mCubeIndicesBufferIdx;
-
-    public final int mBytesPerFloat = 4;
-    public final int mBytesPerShort = 2;
-
-    public final int mPositionDataSize = 3;
-    public final int mColorDataSize = 7;
-    public final int mNormalDataSize = 3;
-    public final int mTextureDataSize = 2;
-
-
-
-    public final int mStrideBytesVertex = mPositionDataSize * mBytesPerFloat;
-    public final int mStrideBytesColor = mColorDataSize * mBytesPerFloat;
-    public final int mStrideBytesNormal = mNormalDataSize * mBytesPerFloat;
-    public final int mStrideBytesTexture = mTextureDataSize * mBytesPerFloat;
-
-
-    private int mCount=0;
-
     private static String LOGTAG = "MeshLoader";
 
+    private FloatBuffer mModelVertices;
+    private FloatBuffer mModelColors;
+    private FloatBuffer mModelNormals;
+    private FloatBuffer mModelTextures;
+    private ByteBuffer mModelIndices;
+
+    private int mCountVertices=0;
+    private int mCountColors=0;
+    private int mCountNormals=0;
+    private int mCountTextures=0;
+    private int mCountIndices=0;
+
+    private int mCubePositionsBufferIdx;
+    private int mCubeNormalsBufferIdx;
+    private int mCubeTexCoordsBufferIdx;
+    private int mCubeIndicesBufferIdx;
+
+    private final int mBytesPerFloat = 4;
+    private final int mBytesPerShort = 2;
+
+    private final int mPositionDataSize = 3;
+    private final int mColorDataSize = 4;
+    private final int mNormalDataSize = 3;
+    private final int mTextureDataSize = 2;
+    private final int mPositionOffset = 0;
+    private final int mColorOffset = 3;
+    private final int mStrideBytesColor = (mColorDataSize+mPositionDataSize) * mBytesPerFloat;
 
     public enum BUFFER_TYPE
     {
@@ -72,12 +63,13 @@ public class MeshLoader {
         DATA_FLOAT, DATA_SHORT
     }
 
+    /**Ładuje dane graficzne do buforów*/
     public void loadToBuffer(String filename, BUFFER_TYPE buffer_type,
                                    BUFFER_DATA_TYPE buffer_data_type , AssetManager assetManager) throws IOException{
         InputStream is = null;
         DataInputStream dis = null;
         ByteBuffer vertices;
-
+        int mCount=0;
         try {
             is = assetManager.open(filename);
             dis = new DataInputStream(is);
@@ -135,46 +127,13 @@ public class MeshLoader {
                 Log.e(LOGTAG,"Count N: "+ mCountNormals);
             case BUFFER_TYPE_COLOR:
                 mModelColors = vertices.asFloatBuffer();
-                mCountColors = mCount / mColorDataSize;
+                mCountColors = mCount / (mColorDataSize+mPositionDataSize);
             default:
                 break;
         }
     }
 
-    public int loadTexture(final Context context, final int resourceId) {
-        final int[] textureHandle = new int[1];
-
-        GLES20.glGenTextures(1, textureHandle, 0);
-
-        if (textureHandle[0] != 0)
-        {
-            final BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inScaled = false;   // No pre-scaling
-            // Read in the resource
-            final Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resourceId, options);
-
-            // Bind to the texture in OpenGL
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[0]);
-
-            // Set filtering
-            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
-            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_NEAREST);
-
-            // Load the bitmap into the bound texture.
-            GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
-
-            // Recycle the bitmap, since its data has been loaded into OpenGL.
-            bitmap.recycle();
-        }
-
-        if (textureHandle[0] == 0)
-        {
-            throw new RuntimeException("Error loading texture.");
-        }
-
-        return textureHandle[0];
-    }
-
+    /**Wczytuje obraz tekstury z zasobów aplikacji - zwraca uchwyt z OpenGL do niej*/
     public int loadTextureFromApk(String fileName, AssetManager assets) {
         InputStream inputStream = null;
         try
@@ -199,6 +158,7 @@ public class MeshLoader {
         }
     }
 
+    /**Ładuje wczytaną wcześniej teksturę do pomięci OpenGL i zwraca uchwyt*/
     private int loadTextureFromIntBuffer(int[] data, int width, int height) {
         ByteBuffer mData;
         int numPixels = width * height;
@@ -218,32 +178,19 @@ public class MeshLoader {
                 ByteOrder.nativeOrder());
         int rowSize = width * 4;
         for (int r = 0; r < height; r++)
-            mData.put(dataBytes, rowSize * (height - 1 - r),
-                    rowSize);
-
+            mData.put(dataBytes, rowSize * (height - 1 - r), rowSize);
         mData.rewind();
-
         final int[] textureHandle = new int[1];
-
         GLES20.glGenTextures(1, textureHandle, 0);
 
         if (textureHandle[0] != 0)
         {
-            // Bind to the texture in OpenGL
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[0]);
-
-            // Set filtering
             GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
             GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_NEAREST);
-
-            // Load the bitmap into the bound texture.
             GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA,
                     width, height, 0, GLES20.GL_RGBA,
                     GLES20.GL_UNSIGNED_BYTE, mData);
-
-
-
-            // Cleans variables
             dataBytes = null;
             data = null;
         }
@@ -255,5 +202,104 @@ public class MeshLoader {
 
         return textureHandle[0];
 
+    }
+    public int getmPositionOffset() {
+        return mPositionOffset;
+    }
+
+    public int getmColorOffset() {
+        return mColorOffset;
+    }
+
+    public int getmPositionDataSize() {
+        return mPositionDataSize;
+    }
+
+    public int getmStrideBytesColor() {
+        return mStrideBytesColor;
+    }
+
+    public FloatBuffer getmModelColors() {
+        return mModelColors;
+    }
+
+    public int getmColorDataSize() {
+        return mColorDataSize;
+    }
+
+    public int getmCountColors() {
+        return mCountColors;
+    }
+
+    public int getmBytesPerFloat() {
+        return mBytesPerFloat;
+    }
+
+    public int getmBytesPerShort() {
+        return mBytesPerShort;
+    }
+
+    public FloatBuffer getmModelVertices() {
+        return mModelVertices;
+    }
+
+    public FloatBuffer getmModelNormals() {
+        return mModelNormals;
+    }
+
+    public FloatBuffer getmModelTextures() {
+        return mModelTextures;
+    }
+
+    public ByteBuffer getmModelIndices() {
+        return mModelIndices;
+    }
+
+    public int getmNormalDataSize() {
+        return mNormalDataSize;
+    }
+
+    public int getmTextureDataSize() {
+        return mTextureDataSize;
+    }
+
+    public int getmCountIndices() {
+        return mCountIndices;
+    }
+
+    public int getmCubePositionsBufferIdx() {
+        return mCubePositionsBufferIdx;
+    }
+
+    public int getmCubeNormalsBufferIdx() {
+        return mCubeNormalsBufferIdx;
+    }
+
+    public int getmCubeTexCoordsBufferIdx() {
+        return mCubeTexCoordsBufferIdx;
+    }
+
+    public int getmCubeIndicesBufferIdx() {
+        return mCubeIndicesBufferIdx;
+    }
+
+    public void setmCubePositionsBufferIdx(int mCubePositionsBufferIdx) {
+        this.mCubePositionsBufferIdx = mCubePositionsBufferIdx;
+    }
+
+    public void setmCubeNormalsBufferIdx(int mCubeNormalsBufferIdx) {
+        this.mCubeNormalsBufferIdx = mCubeNormalsBufferIdx;
+    }
+
+    public void setmCubeTexCoordsBufferIdx(int mCubeTexCoordsBufferIdx) {
+        this.mCubeTexCoordsBufferIdx = mCubeTexCoordsBufferIdx;
+    }
+
+    public void setmCubeIndicesBufferIdx(int mCubeIndicesBufferIdx) {
+        this.mCubeIndicesBufferIdx = mCubeIndicesBufferIdx;
+    }
+
+    public int getmCountVertices() {
+        return mCountVertices;
     }
 }

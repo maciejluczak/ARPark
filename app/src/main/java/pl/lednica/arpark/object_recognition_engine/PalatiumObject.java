@@ -18,21 +18,21 @@ public class PalatiumObject extends BowlAndSpoonObject {
         MeshLoader mesh = new MeshLoader();
         mesh.loadToBuffer("Palatium/v.dat", MeshLoader.BUFFER_TYPE.BUFFER_TYPE_VERTEX,
                 MeshLoader.BUFFER_DATA_TYPE.DATA_FLOAT,inAssetManager);
-        numVertex = mesh.mCountVertices;
-        numIndexes = mesh.mCountVertices * mesh.mPositionDataSize;
-        mVertBuff = mesh.mModelVertices;
+        numVertex = mesh.getmCountVertices();
+        numIndexes = mesh.getmCountVertices() * mesh.getmPositionDataSize();
+        mVertBuff = mesh.getmModelVertices();
 
         mesh.loadToBuffer("Palatium/t.dat", MeshLoader.BUFFER_TYPE.BUFFER_TYPE_VERTEX,
                 MeshLoader.BUFFER_DATA_TYPE.DATA_FLOAT,inAssetManager);
-        mTexCoordBuff = mesh.mModelVertices;
+        mTexCoordBuff = mesh.getmModelVertices();
 
         mesh.loadToBuffer("Palatium/n.dat", MeshLoader.BUFFER_TYPE.BUFFER_TYPE_VERTEX,
                 MeshLoader.BUFFER_DATA_TYPE.DATA_FLOAT,inAssetManager);
-        mNormBuff = mesh.mModelVertices;
+        mNormBuff = mesh.getmModelVertices();
 
         mesh.loadToBuffer("Palatium/i.dat", MeshLoader.BUFFER_TYPE.BUFFER_TYPE_VERTEX,
                 MeshLoader.BUFFER_DATA_TYPE.DATA_FLOAT,inAssetManager);
-        mIndBuff = mesh.mModelVertices;
+        mIndBuff = mesh.getmModelVertices();
     }
     @Override
     public Buffer getBuffer(BUFFER_TYPE bufferType)

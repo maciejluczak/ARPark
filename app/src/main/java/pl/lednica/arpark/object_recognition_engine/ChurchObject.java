@@ -23,22 +23,22 @@ public class ChurchObject extends BowlAndSpoonObject {
                 MeshLoader.BUFFER_TYPE.BUFFER_TYPE_NORMALS, MeshLoader.BUFFER_DATA_TYPE.DATA_FLOAT, inAssetManager);
         meshLoader.loadToBuffer("Compostela/cubeText_Cube_1_i_Model.dat",
                 MeshLoader.BUFFER_TYPE.BUFFER_TYPE_INDICES, MeshLoader.BUFFER_DATA_TYPE.DATA_SHORT, inAssetManager);
-        mVertBuff = meshLoader.mModelVertices;
-        mTexCoordBuff = meshLoader.mModelTextures;
-        mNormBuff = meshLoader.mModelNormals;
-        mIndBuff = meshLoader.mModelIndices;
+        mVertBuff = meshLoader.getmModelVertices();
+        mTexCoordBuff = meshLoader.getmModelTextures();
+        mNormBuff = meshLoader.getmModelNormals();
+        mIndBuff = meshLoader.getmModelIndices();
     }
 
     @Override
     public int getNumObjectVertex()
     {
-        return meshLoader.mCountVertices;
+        return meshLoader.getmCountVertices();
     }
 
 
     @Override
     public int getNumObjectIndex()
     {
-        return meshLoader.mCountIndices;
+        return meshLoader.getmCountIndices();
     }
 }

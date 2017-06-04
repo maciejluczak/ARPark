@@ -42,11 +42,11 @@ public class ObjectExplorer3DActivity extends Activity {
         objectModel = (ObjectModel) getIntent().getSerializableExtra(INTENT_OBJECT_EXTRA);
         Log.e(LOGTAG,objectModel.getDesc());
         //Stworzenie widoku który dziedziczy z GLSurfaceView i obsługuje dotyk
-        if(objectModel.getModelName().equals(new String("cross"))) {
-            mGLSurfaceView = new GLSurfaceView(this);
-        }else{
+//        if(objectModel.getModelName().equals(new String("cross"))) {
+//            mGLSurfaceView = new GLSurfaceView(this);
+//        }else{
             mGLSurfaceView = new ObjectExplorerView(this);
-        }
+//        }
         // Sprawdzenie czy użądzenie obsługuje OpenGL ES 2.0.
         final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
@@ -58,9 +58,9 @@ public class ObjectExplorer3DActivity extends Activity {
 
             //Ustawienie odpowiedniej klasy jako Renderera
             //renderer = new CottageObject(this);
-            if(objectModel.getModelName().equals(new String("cross"))){
-                rendererColor = new UniversalColorObject(this);
-                mGLSurfaceView.setRenderer( rendererColor );
+            if(objectModel.getModelName().equals("cross")){
+                renderer = new UniversalColorObject(this, objectModel);
+                mGLSurfaceView.setRenderer( renderer );
             }else {
                 renderer = new UniversalTextureObject(this, objectModel);
                 mGLSurfaceView.setRenderer( renderer );

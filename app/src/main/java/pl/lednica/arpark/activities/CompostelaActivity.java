@@ -27,6 +27,7 @@ import com.google.android.gms.location.LocationServices;
 
 import java.io.FileOutputStream;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.microedition.khronos.egl.EGL10;
@@ -34,9 +35,12 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLDisplay;
 
 import pl.lednica.arpark.R;
+import pl.lednica.arpark.helpers.ObjectJsonUtils;
+import pl.lednica.arpark.helpers.ObjectModel;
 import pl.lednica.arpark.sensor_engine.CameraView;
 import pl.lednica.arpark.sensor_engine.SensorCameraViewRenderer;
 import pl.lednica.arpark.sensor_engine.SensorData;
+import pl.lednica.arpark.sensor_engine.SensorViewRenderer;
 
 public class CompostelaActivity extends Activity
         implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks, LocationListener,
@@ -126,7 +130,11 @@ public class CompostelaActivity extends Activity
             glView.getHolder().setFormat( PixelFormat.TRANSLUCENT );
             // The renderer will be implemented in a separate class, GLView, which I'll show next.
             Log.i(LOGTAG,"Przed wywołaniem konstruktora SensorCameraViewRenderer");
-            glView.setRenderer( new SensorCameraViewRenderer(this,cameraView) );
+            ArrayList<ObjectModel> objects;
+            ObjectJsonUtils jsonUtils;
+            jsonUtils  = new ObjectJsonUtils(this.getApplicationContext());
+            objects = jsonUtils.getObjectsList();
+            glView.setRenderer( new SensorViewRenderer(this,cameraView,objects.get(1)) );
             // Now set this as the main view.
             setContentView( glView );
         }
