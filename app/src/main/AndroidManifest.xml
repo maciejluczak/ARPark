@@ -48,7 +48,6 @@
             android:theme="@android:style/Theme.NoTitleBar" />
         <activity android:name=".activities.PalatiumActivity" />
         <activity android:name=".activities.WallActivity" />
-        <activity android:name=".activities.BoroughActivity" />
         <activity android:name=".activities.object_explorer.ObjectExplorer3DActivity" />
         <activity
             android:name=".activities.object_explorer.ObjectExplorerTabActivity"

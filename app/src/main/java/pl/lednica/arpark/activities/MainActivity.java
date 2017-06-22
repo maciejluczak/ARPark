@@ -39,7 +39,7 @@ public class MainActivity extends Activity
     Button churchButton;
     Button compostelaButton;
     private static final String TAG = "MainActivity";
-    private static final String goToAR = "Przytrzmaj dłużej >>>";
+    private static final String goToAR = "Przytrzymaj dłużej >>>";
     boolean showChurch = false;
     boolean showCompostela = false;
     
@@ -58,8 +58,7 @@ public class MainActivity extends Activity
             new MapObject(17.377378, 52.5263, "churchButton", ChurchActivity.class),
             new MapObject(17.37759, 52.52590, "compostelaButton", CompostelaActivity.class),
             new MapObject(17.37668, 52.526548, "wallButton", WallActivity.class),
-            new MapObject(17.378826, 52.526039, "palatiumButton", PalatiumActivity.class),
-            new MapObject(17.378869, 52.527116, "boroughButton", BoroughActivity.class)
+            new MapObject(17.378826, 52.526039, "palatiumButton", PalatiumActivity.class)
     };
     //Variables to Localisation
     private GoogleApiClient mGoogleApiClient;

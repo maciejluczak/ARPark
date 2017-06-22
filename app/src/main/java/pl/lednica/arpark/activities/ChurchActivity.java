@@ -280,14 +280,6 @@ public class ChurchActivity extends Activity implements CustomApplicationControl
         // Stworzenie widoku OpenGli
         mGlView = new CustomApplicationGLView(this);
         mGlView.init(translucent, depthSize, stencilSize);
-
-        // Stworzenie w nim  renderera od renderowania :)
-//        try {
-//            mRenderer = new MultiTargetRenderer(vuforiaAppSession, new ChurchObject(getResources().getAssets()));
-//
-//        }catch (IOException e){
-//            Log.e(LOGTAG,"IOException load church model");
-//        }
         mRenderer = new MultiTargetRenderer(vuforiaAppSession, new ChurchObject());
 
         mRenderer.setTextures(mTextures);
