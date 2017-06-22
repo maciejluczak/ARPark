@@ -97,7 +97,7 @@ public class LightTextureRenderer implements GLSurfaceView.Renderer {
         final float bottom = -1.0f;
         final float top = 1.0f;
         final float near = 1.0f;
-        final float far = 10.0f;
+        final float far = 100.0f;
 
         Matrix.frustumM(projectionMatrix, 0, left, right, bottom, top, near, far);
     }
@@ -217,8 +217,8 @@ public class LightTextureRenderer implements GLSurfaceView.Renderer {
         //Ustawienia OpenGL
         GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
         GLES20.glUseProgram(perVertexProgramHandle);
-        GLES20.glFrontFace(GLES20.GL_CCW);
-        GLES20.glDisable(GLES20.GL_CULL_FACE);
+        //GLES20.glFrontFace(GLES20.GL_CCW);
+        //GLES20.glDisable(GLES20.GL_CULL_FACE);
 
         //załadowanie uchwytów do atrybutów i związanie tekstury
         if(isTextureRenderer==TEXTURE_RENDERER) {
@@ -257,8 +257,9 @@ public class LightTextureRenderer implements GLSurfaceView.Renderer {
     }
 
     protected void translateM(){
-        Matrix.translateM(modelMatrix, 0, 0.0f, -1.0f, -scale);
+        Matrix.translateM(modelMatrix, 0, 0.0f, 0.0f, -scale);
         Matrix.rotateM(modelMatrix, 0, angle, 0.0f, 1.0f, 0.0f);
+
     }
 
     private void drawModel(MeshLoader meshLoc, int bufVert, int bufNorms,int bufText,int bufInd)

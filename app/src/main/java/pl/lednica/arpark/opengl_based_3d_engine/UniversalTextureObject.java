@@ -21,10 +21,10 @@ public class UniversalTextureObject extends LightTextureRenderer {
         Log.e("UniversalText", "Size "+objectModel.getMeshs().size());
         for(String obj : objectModel.getMeshs()) {
             objectFilesVector.add(new ObjectFiles(
-                    path + "/" + model + "_" + obj + "_1_v_Model.dat",
-                    path + "/" + model + "_" + obj + "_1_n_Model.dat",
-                    path + "/" + model + "_" + obj + "_1_t_Model.dat",
-                    path + "/" + model + "_" + obj + "_1_i_Model.dat",
+                    path + "/" + model + "_" + obj + "_v_Model.dat",
+                    path + "/" + model + "_" + obj + "_n_Model.dat",
+                    path + "/" + model + "_" + obj + "_t_Model.dat",
+                    path + "/" + model + "_" + obj + "_i_Model.dat",
                     path+"/"+textureImage
             ));
         }

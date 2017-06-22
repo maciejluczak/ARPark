@@ -15,16 +15,16 @@
         },
         "mesh": [
           {
-            "name": "parter"
+            "name": "parter_1"
           },
           {
-            "name": "Belki"
+            "name": "Belki_1"
           },
           {
-            "name": "dach1"
+            "name": "dach1_1"
           },
           {
-            "name": "dach2"
+            "name": "dach2_1"
           }
         ]
       },
@@ -90,10 +90,10 @@
       },
       "model": {
         "meta": {
-          "name": "kosciol-lednica",
+          "name": "kosciol-lednica-ostateczny",
           "path": "Church",
           "textureImage": "kosciol_tekstura.png",
-          "scale": "2.0"
+          "scale": "11.0"
         },
         "mesh": [
           {
@@ -112,6 +112,40 @@
           {
             "name": "Przypisy",
             "text": "Informacje zostały zacytowane z strony https://pl.wikipedia.org/wiki/Ostr%C3%B3w_Lednicki"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Wał grodu",
+      "position": {
+        "lat": 17.37668,
+        "long": 52.526548
+      },
+      "model": {
+        "meta": {
+          "name": "kosciol-lednica-ostateczny",
+          "path": "Wall",
+          "textureImage": "wall_tekstura.png",
+          "scale": "1.0"
+        },
+        "mesh": [
+          {
+            "name": "Cube"
+          }
+        ]
+      },
+      "details": {
+        "description": "Pozostałości wału obronnego grodu",
+        "icon": "wal_foto",
+        "information": [
+          {
+            "name": "Opis",
+            "text": ""
+          },
+          {
+            "name": "Przypisy",
+            "text": ""
           }
         ]
       }
