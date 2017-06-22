@@ -33,13 +33,6 @@ public class SensorCameraViewRenderer implements GLSurfaceView.Renderer{
     public static final String ORIENTATION_ORGINAL = "orientation_orginal.csv";
     public static final String ORIENTATION_FILTERED = "orientation_filtered";
 
-    /*public final static Location mountWashington = new Location("manual");
-    static {
-        mountWashington.setLatitude(42.869466d);
-        mountWashington.setLongitude(-8.547657d);
-        mountWashington.setAltitude(50.0d);
-    }*/
-
     private int widthT,heightT;
     private float glFOV;
     private float wynik=0.0f;
@@ -106,24 +99,6 @@ public class SensorCameraViewRenderer implements GLSurfaceView.Renderer{
 
         mActivity = activity;
         mCameraView = camera;
-        // Define points for equilateral triangles.
-        // This trisangle is red, green, and blue.
-        //strzalka trojkatna i domyslny bufor
-       /* final float[] triangle1VerticesData = {
-                // X, Y, Z,
-                // R, G, B, A
-                -0.5f, 0.0f, 0.0f,
-                1.0f, 0.0f, 0.0f, 1.0f,
-
-                0.5f, 0.0f, 0.0f,
-                0.0f, 0.0f, 1.0f, 1.0f,
-
-                0.0f, 0.5f, 0.0f,
-                0.0f, 1.0f, 0.0f, 1.0f};
-        // Initialize the buffers.
-        mTriangle1Vertices = ByteBuffer.allocateDirect(triangle1VerticesData.length * mBytesPerFloat)
-                .order(ByteOrder.nativeOrder()).asFloatBuffer();
-        mTriangle1Vertices.put(triangle1VerticesData).position(0);*/
 
         AssetManager assetManager = mActivity.getResources().getAssets();
         String filename = "Compostela/crossModel.dat";
@@ -138,14 +113,12 @@ public class SensorCameraViewRenderer implements GLSurfaceView.Renderer{
 
             int floatsToRead = count / mBytesPerFloat;
             mVertexCount = count / mStrideBytes;
-            //Log.e("HEJ","Liczba: "+ floatsToRead);
             verts = ByteBuffer.allocateDirect(floatsToRead * 4);
             verts.order(ByteOrder.nativeOrder());
 
             for (int i = 0; i < floatsToRead; i++)
             {
                 float readTmp = dis.readFloat();
-                //Log.e("HEJ","ReadVal: "+ readTmp);
                 verts.putFloat(readTmp);
             }
             verts.rewind();
@@ -169,36 +142,9 @@ public class SensorCameraViewRenderer implements GLSurfaceView.Renderer{
 
                 }
         }
-
-        /*ByteBuffer bb = ByteBuffer.allocateDirect(mBytesPerFloat * CrossModel.triangle1VerticesData.length);
-        bb.order(ByteOrder.nativeOrder());
-        for (double d : CrossModel.triangle1VerticesData)
-            bb.putFloat((float) d);
-        bb.rewind();
-        mTriangle1Vertices  = verts.asFloatBuffer();*/
-
-
-
     }
+
     public void onDrawFrame( GL10 gl ) {
-        // compute rotation matrix
-        /*float rotation[] = new float[9];
-        float identity[] = new float[9];
-        float orientation[] = new float[3];
-        boolean gotRotation = SensorManager.getRotationMatrix(rotation,
-                identity, mActivity.getAccelerometrData(), mActivity.getGeomagneticData());
-        if (gotRotation) {
-            float cameraRotation[] = new float[9];
-            // remap such that the camera is pointing straight down the Y axis
-            SensorManager.remapCoordinateSystem(rotation, SensorManager.AXIS_X,
-                    SensorManager.AXIS_Z, cameraRotation);
-
-            // orientation vector
-
-            SensorManager.getOrientation(cameraRotation, orientation);
-            Log.e(LOGTAG,"x: "+ (float)Math.toDegrees(orientation[0]) +" y "+
-                    (float)Math.toDegrees(orientation[1]) +" z "+ (float)Math.toDegrees(orientation[2]));
-        }*/
 
         float orientation[] = mActivity.getSensorData().getOrientation();
         Location location = mActivity.getSensorData().getLocation();
@@ -208,16 +154,12 @@ public class SensorCameraViewRenderer implements GLSurfaceView.Renderer{
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
 
-        // Do a complete rotation every 10 seconds.
-        long time = SystemClock.uptimeMillis() % 10000L;
-        //float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
+        float currentBearingToTarget = 0.0f;
 
-        // Draw the triangle facing straight on.
-        float curBearingToMW = 0.0f;
         float dx = 0.0f;
         float dz = 0.0f;
         try {
-            curBearingToMW = location.bearingTo(targetLocation);
+            currentBearingToTarget = location.bearingTo(targetLocation);
 
             double latitudeDelta = targetLocation.getLatitude() - location.getLatitude();
             double longitudeDelta = targetLocation.getLongitude() - location.getLongitude();
@@ -227,25 +169,26 @@ public class SensorCameraViewRenderer implements GLSurfaceView.Renderer{
                        Math.cos(location.getLatitude());
             double b  = 2* Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
             double d = 6471 * b;
-            dx = (float)(d * Math.cos(curBearingToMW));
-            dz = (float)(d *  Math.sin(curBearingToMW));
+
+            dx = (float)(d * Math.cos(currentBearingToTarget));
+            dz = (float)(d *  Math.sin(currentBearingToTarget));
         }catch(NullPointerException e){
             Log.e(LOGTAG,"Brak wyznaczonej pozycji");
         }
         Matrix.setIdentityM(mModelMatrix, 0);
-        //Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
-        //Matrix.translateM(mModelMatrix,0,2.0f,2.0f,0.0f);
+        //Matrix.rotateM(modelMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
+        //Matrix.translateM(modelMatrix,0,2.0f,2.0f,0.0f);
 
         //float dxT = (float) ( (widthT/ mCameraView.getHorizontalFOV()) * (Math.toDegrees(orientation[0])-curBearingToMW));
         //float dyT = (float) ( (heightT/ mCameraView.getVerticalFOV()) * Math.toDegrees(orientation[1]));
-        //Matrix.rotateM(mModelMatrix,0,(float)(0.0f- Math.toDegrees(orientation[2])),0.0f,1.0f,0.0f);
-        //Matrix.translateM(mModelMatrix,0,0.0f - dxT, 0.0f -dyT,0.0f);
+        //Matrix.rotateM(modelMatrix,0,(float)(0.0f- Math.toDegrees(orientation[2])),0.0f,1.0f,0.0f);
+        //Matrix.translateM(modelMatrix,0,0.0f - dxT, 0.0f -dyT,0.0f);
 
         //fajny efekt ale ucieka
-        //Matrix.translateM(mModelMatrix,0,0.0f- (float)(Math.toDegrees(orientation[0])-curBearingToMW),0.0f ,0.0f);
-        //Matrix.rotateM(mModelMatrix,0,0.0f-(float)Math.toDegrees(orientation[1]),0.0f,1.0f,0.0f);
+        //Matrix.translateM(modelMatrix,0,0.0f- (float)(Math.toDegrees(orientation[0])-curBearingToMW),0.0f ,0.0f);
+        //Matrix.rotateM(modelMatrix,0,0.0f-(float)Math.toDegrees(orientation[1]),0.0f,1.0f,0.0f);
 
-        //Matrix.translateM(mModelMatrix,0,0.0f,0.0f ,-1.0f);
+        //Matrix.translateM(modelMatrix,0,0.0f,0.0f ,-1.0f);
 
         final float eyeX = 0.0f;
         final float eyeY = 0.0f;
@@ -262,17 +205,19 @@ public class SensorCameraViewRenderer implements GLSurfaceView.Renderer{
         //float x = (float) Math.tan(mCameraView.getHorizontalFOV()/2)*d;
         //tangens źle podaje więc podajemy z stałej
         double x = 1.73205 * d;
-        double xTan =(float) Math.tan(Math.toRadians(mCameraView.getHorizontalFOV()/2))*d*4.0f;
+        float angleHFOV = mCameraView.getHorizontalFOV()/2;
+        double xTan =(float) Math.tan(Math.toRadians(angleHFOV))*d*4.0f;
         //zastąpienie konta z kamery kontem z opengles (mCameraView.getHorizontalFOV()/2)-> glFOV
-        if(curBearingToMW <= (float)((Math.toDegrees(orientation[0]) +glFOV+20) )){
-            if(curBearingToMW >= (float)((Math.toDegrees(orientation[0]) -glFOV-20))){
-                if((Math.toDegrees(orientation[0])>90.0f)&(curBearingToMW<-90.0f)){
-                    deltaTmp = (float)(Math.toDegrees(orientation[0]) + curBearingToMW);
+        Log.e("BEARING", "C: "+ currentBearingToTarget);
+        if(currentBearingToTarget <= (float)((Math.toDegrees(orientation[0]) +angleHFOV+20) )){
+            if(currentBearingToTarget >= (float)((Math.toDegrees(orientation[0]) -angleHFOV-20))){
+                if((Math.toDegrees(orientation[0])>90.0f)&(currentBearingToTarget<-90.0f)){
+                    deltaTmp = (float)(Math.toDegrees(orientation[0]) + currentBearingToTarget);
                 }else{
-                    if((Math.toDegrees(orientation[0]) < -90.0f)&(curBearingToMW>90.0f)) {
-                        deltaTmp = (float)(Math.toDegrees(orientation[0]) + curBearingToMW);
+                    if((Math.toDegrees(orientation[0]) < -90.0f)&(currentBearingToTarget>90.0f)) {
+                        deltaTmp = (float)(Math.toDegrees(orientation[0]) + currentBearingToTarget);
                     }else{
-                        deltaTmp = (float)(Math.toDegrees(orientation[0]) - curBearingToMW);
+                        deltaTmp = (float)(Math.toDegrees(orientation[0]) - currentBearingToTarget);
                     }
                 }
                 //delta = (float)(Math.toDegrees(orientation[0]) - curBearingToMW);
@@ -282,12 +227,19 @@ public class SensorCameraViewRenderer implements GLSurfaceView.Renderer{
                 float deltaCompTreshold = delta;
 
                 if (!Float.isNaN(deltaTmp)) {
-                    if (Math.abs(delta - deltaTmp) > 5) {
-                        wynikLoad = (delta / (mCameraView.getHorizontalFOV() / 2)) * (float) xTan;
-                        delta = 0.1f * deltaTmp + (1.0f - 0.1f) * delta;
-                    } else {
-                        delta = 0.2f * deltaTmp + (1.0f - 0.2f) * delta;
-                        wynikLoad = (delta / (mCameraView.getHorizontalFOV() / 2)) * (float) xTan;
+                    if (Math.abs(delta - deltaTmp) > 10) {
+                        delta = 0.5f * deltaTmp + (1.0f - 0.5f) * delta;
+                        wynikLoad = (delta / (angleHFOV)) * (float) xTan;
+                    }else{
+                        if (Math.abs(delta - deltaTmp) > 5) {
+                            delta = 0.2f * deltaTmp + (1.0f - 0.2f) * delta;
+                            wynikLoad = (delta / (angleHFOV)) * (float) xTan;
+                        } else {
+                            if (Math.abs(delta - deltaTmp) >2 ) {
+                                wynikLoad = (delta / (angleHFOV)) * (float) xTan;
+                                delta = 0.1f * deltaTmp + (1.0f - 0.1f) * delta;
+                            }
+                        }
                     }
                 }
                 if(!Float.isNaN(deltaTmp)) {
@@ -335,21 +287,23 @@ public class SensorCameraViewRenderer implements GLSurfaceView.Renderer{
 
                 //próba przesunięcie + obrót względem y, nieudana obraca model według osi y położonej wewnątrz modelu
                 Matrix.translateM(mModelMatrix,0,0.0f,0.0f ,-1.5f);
-                //Matrix.rotateM(mModelMatrix,0,delta,0.0f,1.0f ,0.0f);
+                //Matrix.rotateM(modelMatrix,0,delta,0.0f,1.0f ,0.0f);
 
                 //przesuwanie widoku względem osi x funkcja cos
                 //x = Math.sqrt(((1.5/Math.cos(Math.toRadians(Math.abs(delta))))*(1.5/Math.cos(Math.toRadians(Math.abs(delta))))) -(d*d) );
                 if(delta<0){
                     x = 0.0f - x;
                 }
-                //Matrix.translateM(mViewMatrix,0,0.0f - (float)x,0.0f,0.0f);
+                //Matrix.translateM(viewMatrix,0,0.0f - (float)x,0.0f,0.0f);
                 //Log.e(LOGTAG,"FOVOPENGL: "+glFOV +"delta: "+delta +" abs(delta): "+Math.abs(delta)+" cos: "+Math.cos(Math.toRadians(Math.abs(delta)))+ " x: " + x +" ---------- ");
 
             }else{
                 Matrix.translateM(mModelMatrix,0,0.0f,-500.0f, 0.0f);
+                delta=0;
             }
         }else{
             Matrix.translateM(mModelMatrix,0,0.0f,-500.0f, 0.0f);
+            delta=0;
         }
         float tmp  = 0.0f - (float)(Math.toDegrees(orientation[0]));
         //Log.e(LOGTAG,"tmp: "+tmp+
@@ -378,21 +332,21 @@ public class SensorCameraViewRenderer implements GLSurfaceView.Renderer{
         // Set the view matrix. This matrix can be said to represent the camera position.
         // NOTE: In OpenGL 1, a ModelView matrix is used, which is a combination of a model and
         // view matrix. In OpenGL 2, we can keep track of these matrices separately if we choose.
-       Matrix.setLookAtM(mViewMatrix, 0, eyeX, eyeY, eyeZ, lookX, lookY, lookZ, upX, upY, upZ);*/
+       Matrix.setLookAtM(viewMatrix, 0, eyeX, eyeY, eyeZ, lookX, lookY, lookZ, upX, upY, upZ);*/
 
 
         //najfajniejsze
-        //Matrix.rotateM(mViewMatrix,0,0.0f - (float)Math.toDegrees(orientation[0]),1.0f,0.0f,0.0f);
-        //Matrix.translateM(mViewMatrix,0,0.0f,0.0f -(float)Math.toDegrees(orientation[1]),0.0f);
+        //Matrix.rotateM(viewMatrix,0,0.0f - (float)Math.toDegrees(orientation[0]),1.0f,0.0f,0.0f);
+        //Matrix.translateM(viewMatrix,0,0.0f,0.0f -(float)Math.toDegrees(orientation[1]),0.0f);
 
-        //Matrix.rotateM(mViewMatrix,0,0.0f -(float)Math.toDegrees(orientation[0]),0.0f,1.0f,0.0f);
+        //Matrix.rotateM(viewMatrix,0,0.0f -(float)Math.toDegrees(orientation[0]),0.0f,1.0f,0.0f);
 
-        //Matrix.rotateM(mViewMatrix,0,(float)Math.toDegrees(orientation[1]),0.0f,1.0f,0.0f);
-        //Matrix.rotateM(mViewMatrix,0,(float)Math.toDegrees(orientation[2]),0.0f,0.0f,1.0f);
-        //Matrix.rotateM(mViewMatrix,0,(float)(0.0f- Math.toDegrees(orientation[2])),0.0f,1.0f,0.0f);
+        //Matrix.rotateM(viewMatrix,0,(float)Math.toDegrees(orientation[1]),0.0f,1.0f,0.0f);
+        //Matrix.rotateM(viewMatrix,0,(float)Math.toDegrees(orientation[2]),0.0f,0.0f,1.0f);
+        //Matrix.rotateM(viewMatrix,0,(float)(0.0f- Math.toDegrees(orientation[2])),0.0f,1.0f,0.0f);
 
-        //Matrix.rotateM(mViewMatrix,0,(float)(0.0f- Math.toDegrees(orientation[2])),0.0f,1.0f,0.0f);
-        //Matrix.translateM(mViewMatrix,0,0.0f - dxT, 0.0f -dyT,0.0f);
+        //Matrix.rotateM(viewMatrix,0,(float)(0.0f- Math.toDegrees(orientation[2])),0.0f,1.0f,0.0f);
+        //Matrix.translateM(viewMatrix,0,0.0f - dxT, 0.0f -dyT,0.0f);
 
 
         drawTriangle(mTriangle1Vertices);
@@ -433,6 +387,7 @@ public class SensorCameraViewRenderer implements GLSurfaceView.Renderer{
     }
 
     public void onSurfaceChanged( GL10 gl, int width, int height ) {
+        Log.e("FOV_R_R","w "+ width+" h "+ height);
         // Set the OpenGL viewport to the same size as the surface.
         GLES20.glViewport(0, 0, width, height);
         widthT = width;
@@ -449,6 +404,7 @@ public class SensorCameraViewRenderer implements GLSurfaceView.Renderer{
         final float far = 10.0f;
 
         glFOV = (float)Math.toDegrees(Math.atan2(near,ratio));
+
         Matrix.frustumM(mProjectionMatrix, 0, left, right, bottom, top, near, far);
     }
 

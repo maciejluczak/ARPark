@@ -2,6 +2,7 @@ package pl.lednica.arpark.sensor_engine;
 
 import android.content.Context;
 import android.hardware.Camera;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -36,6 +37,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
     public void surfaceChanged( SurfaceHolder holder, int format, int width, int height ) {
         // This method is called when the surface changes, e.g. when it's size is set.
         // We use the opportunity to initialize the camera preview display dimensions.
+        Log.e("FOV_R_C","w "+ width+" h "+ height);
         Camera.Parameters p = camera.getParameters();
         p.setPreviewSize( width, height );
         camera.setParameters( p );

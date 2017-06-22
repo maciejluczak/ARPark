@@ -12,7 +12,7 @@ public class CompostelaObject extends LightTextureRenderer{
     public Vector<ObjectFiles> objectFilesVector = new Vector<>();
 
     public CompostelaObject(ObjectExplorer3DActivity activity) {
-        super(activity);
+        super(activity,false);
         String path = "Compostela";
         String model = "cross";
         String[] modelObjects = new String[]{"cross"};

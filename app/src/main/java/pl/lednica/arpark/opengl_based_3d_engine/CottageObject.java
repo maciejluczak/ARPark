@@ -15,7 +15,7 @@ public class CottageObject extends LightTextureRenderer {
     public Vector<ObjectFiles> objectFilesVector = new Vector<>();
 
     public CottageObject(ObjectExplorer3DActivity activity) {
-        super(activity);
+        super(activity,true);
         String path = "Cottage";
         String model = "cottageClear";
         String textureImage = "cottage_texture.png";

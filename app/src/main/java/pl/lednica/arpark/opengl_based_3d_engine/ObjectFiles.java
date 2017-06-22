@@ -29,4 +29,12 @@ public class ObjectFiles {
         this.file_t=null;
         file_texture_image=null;
     }
+    public ObjectFiles(String file_c) {
+        this.file_v = null;
+        this.file_n = null;
+        this.file_i = null;
+        this.file_c = file_c;
+        this.file_t=null;
+        file_texture_image=null;
+    }
 }

@@ -1,11 +1,10 @@
 package pl.lednica.arpark.opengl_based_3d_engine;
 
+import android.app.Activity;
 import android.content.res.AssetManager;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
-import android.os.SystemClock;
-import android.util.Log;
 
 import java.io.IOException;
 import java.util.Vector;
@@ -13,137 +12,141 @@ import java.util.Vector;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import pl.lednica.arpark.activities.object_explorer.ObjectExplorer3DActivity;
-
 /**
  * Created by Maciej on 2016-09-24.
  * Klasa renderujaca obraz 3d
  */
-
 public class LightTextureRenderer implements GLSurfaceView.Renderer {
 
-    private static final String LOGTAG = "SLCRenderer";
+    /**macierz modelu transformuje obiekt z przestrzeni modelu do przestrzeni świata
+     * macierz widoku transformuje macierz świata w macierz widoku czyli kamery
+     * macierz projekcji używana do rzutowania modelu 3d na ekran 2d
+     * kombinacja poprzednich trzech macierzy*/
+    protected float[] modelMatrix = new float[16];
+    protected float[] viewMatrix = new float[16];
+    private float[] projectionMatrix = new float[16];
+    private float[] MVPMatrix = new float[16];
+    private float[] lightModelMatrix = new float[16];
 
-    private float scale;
-    /** macierz modelu transformuje obiekt z przestrzeni modelu do przestrzeni świata */
-    private float[] mModelMatrix = new float[16];
+    /**Oznaczenie wersji renderere:tekstury czy kolor*/
+    private static boolean TEXTURE_RENDERER=true;
+    private boolean isTextureRenderer=false;
 
-    /** macierz widoku transformuje macierz świata w macierz widoku czyli kamery */
-    private float[] mViewMatrix = new float[16];
-
-    /** macierz projekcji używana do rzutowania modelu 3d na ekran 2d */
-    private float[] mProjectionMatrix = new float[16];
-
-    /**kombinacja poprzednich trzech macierzy */
-    private float[] mMVPMatrix = new float[16];
-
-    /** Stores a copy of the model matrix specifically for the light position */
-    private float[] mLightModelMatrix = new float[16];
-
-    /** Dane modelu będą przechowywane w postaci float buffer. */
+    /**Wektor przechowujący obiekty geometrii*/
     private Vector<MeshLoader> meshObjects = new Vector<>();
 
-    private ObjectExplorer3DActivity mActivity;
-    private AssetManager mAssetMenager;
+    private AssetManager assetMenager;
 
-    private int mMVPMatrixHandle;
-    private int mMVMatrixHandle;
-    private int mPositionHandle;
-    private int mColorHandle;
-    private int mNormalHandle;
-    private int mLightPosHandle;
-    private int mTextureDataHandle;
-    private int mTextureCoordinateHandle;
-    private int mTextureUniformHandle;
+    private int MVPMatrixHandle;
+    private int MVMatrixHandle;
+    private int positionHandle;
+    private int colorHandle;
+    private int normalHandle;
+    private int lightPosHandle;
+    private int textureDataHandle;
+    private int textureCoordinateHandle;
+    private int textureUniformHandle;
 
     private String textureImageFile;
 
-    private final float[] mLightPosInModelSpace = new float[] {0.0f, 0.0f, 0.0f, 1.0f};
-    private final float[] mLightPosInWorldSpace = new float[4];
-    private final float[] mLightPosInEyeSpace = new float[4];
+    private final float[] lightPosInModelSpace = new float[] {0.0f, 0.0f, 0.0f, 1.0f};
+    private final float[] lightPosInWorldSpace = new float[4];
+    private final float[] lightPosInEyeSpace = new float[4];
 
-    /** This is a handle to our per-vertex cube shading program. */
-    private int mPerVertexProgramHandle;
-
-    /** This is a handle to our light point program. */
-    private int mPointProgramHandle;
-
-    public volatile float mAngle;
+    private int perVertexProgramHandle;
+    private int pointProgramHandle;
+    private volatile float angle =0;
+    private float scale;
 
 
-    public LightTextureRenderer(ObjectExplorer3DActivity activity) {
-        mActivity = activity;
-        mAssetMenager = mActivity.getResources().getAssets();
+    public LightTextureRenderer(Activity activity, boolean textureRenderer) {
+        assetMenager = activity.getResources().getAssets();
+        this.isTextureRenderer = textureRenderer;
     }
 
 
-    public void loadMesh(int i,ObjectFiles objectFiles){
+    void loadMesh(int i, ObjectFiles objectFiles){
         textureImageFile = objectFiles.file_texture_image;
         meshObjects.add(i,new MeshLoader());
         try {
-            meshObjects.get(i).loadToBuffer(objectFiles.file_v, MeshLoader.BUFFER_TYPE.BUFFER_TYPE_VERTEX,
-                    MeshLoader.BUFFER_DATA_TYPE.DATA_FLOAT, mAssetMenager);
-            meshObjects.get(i).loadToBuffer(objectFiles.file_t, MeshLoader.BUFFER_TYPE.BUFFER_TYPE_TEXTURE_COORD,
-                        MeshLoader.BUFFER_DATA_TYPE.DATA_FLOAT, mAssetMenager);
-            meshObjects.get(i).loadToBuffer(objectFiles.file_n, MeshLoader.BUFFER_TYPE.BUFFER_TYPE_NORMALS,
-                    MeshLoader.BUFFER_DATA_TYPE.DATA_FLOAT, mAssetMenager);
-            meshObjects.get(i).loadToBuffer(objectFiles.file_i, MeshLoader.BUFFER_TYPE.BUFFER_TYPE_INDICES,
-                    MeshLoader.BUFFER_DATA_TYPE.DATA_SHORT, mAssetMenager);
+            if (isTextureRenderer==TEXTURE_RENDERER) {
+                meshObjects.get(i).loadToBuffer(objectFiles.file_v, MeshLoader.BUFFER_TYPE.BUFFER_TYPE_VERTEX,
+                        MeshLoader.BUFFER_DATA_TYPE.DATA_FLOAT, assetMenager);
+                meshObjects.get(i).loadToBuffer(objectFiles.file_t, MeshLoader.BUFFER_TYPE.BUFFER_TYPE_TEXTURE_COORD,
+                        MeshLoader.BUFFER_DATA_TYPE.DATA_FLOAT, assetMenager);
+                meshObjects.get(i).loadToBuffer(objectFiles.file_n, MeshLoader.BUFFER_TYPE.BUFFER_TYPE_NORMALS,
+                        MeshLoader.BUFFER_DATA_TYPE.DATA_FLOAT, assetMenager);
+                meshObjects.get(i).loadToBuffer(objectFiles.file_i, MeshLoader.BUFFER_TYPE.BUFFER_TYPE_INDICES,
+                        MeshLoader.BUFFER_DATA_TYPE.DATA_SHORT, assetMenager);
+            }else {
+                meshObjects.get(i).loadToBuffer(objectFiles.file_c, MeshLoader.BUFFER_TYPE.BUFFER_TYPE_COLOR,
+                        MeshLoader.BUFFER_DATA_TYPE.DATA_FLOAT, assetMenager);
+            }
         }catch (IOException e){
-            Log.e(LOGTAG,"Loading models error!");
+            e.printStackTrace();
         }
     }
 
     @Override
-    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        // Set the background clear color to black.
-        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    public void onSurfaceChanged(GL10 gl, int width, int height) {
+        GLES20.glViewport(0, 0, width, height);
 
-        // Use culling to remove back faces.
+        final float ratio = (float) width / height;
+        final float left = -ratio;
+        final float right = ratio;
+        final float bottom = -1.0f;
+        final float top = 1.0f;
+        final float near = 1.0f;
+        final float far = 10.0f;
+
+        Matrix.frustumM(projectionMatrix, 0, left, right, bottom, top, near, far);
+    }
+
+    @Override
+    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+
+        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
-
-        // Position the eye behind the origin.
         final float eyeX = 0.0f;
         final float eyeY = 0.0f;
         final float eyeZ = 0.0f;
 
-        // We are looking toward the distance
         final float lookX = 0.0f;
         final float lookY = 0.0f;
         final float lookZ = -100.0f;
 
-        // Set our up vector. This is where our head would be pointing were we holding the camera.
         final float upX = 0.0f;
         final float upY = 1.0f;
         final float upZ = 0.0f;
 
-        // Set the view matrix. This matrix can be said to represent the camera position.
-        // NOTE: In OpenGL 1, a ModelView matrix is used, which is a combination of a model and
-        // view matrix. In OpenGL 2, we can keep track of these matrices separately if we choose.
-        Matrix.setLookAtM(mViewMatrix, 0, eyeX, eyeY, eyeZ, lookX, lookY, lookZ, upX, upY, upZ);
+        Matrix.setLookAtM(viewMatrix, 0, eyeX, eyeY, eyeZ, lookX, lookY, lookZ, upX, upY, upZ);
 
-        //final String vertexShader = SimpleLightColorShaders.DEFFUSE_POINT_LIGHT_VERTEX_SHADER;
-        //final String fragmentShader = SimpleLightColorShaders.DEFFUSE_POINT_LIGHT_FRAGMENT_SHADER;
-
-        final String vertexShader = SimpleLightTextureShaders.DEFFUSE_POINT_LIGHT_VERTEX_SHADER;
-        final String fragmentShader = SimpleLightTextureShaders.DEFFUSE_POINT_LIGHT_FRAGMENT_SHADER;
-        //mTextureDataHandle = meshTextures.loadTexture(mActivity, R.drawable.kosciol_tekstura);
-        mTextureDataHandle = meshObjects.get(0).loadTextureFromApk(textureImageFile,mAssetMenager);
-
+        final String vertexShader;
+        final String fragmentShader;
+        if(isTextureRenderer==TEXTURE_RENDERER) {
+            vertexShader = SimpleLightTextureShaders.DEFFUSE_POINT_LIGHT_VERTEX_SHADER;
+            fragmentShader = SimpleLightTextureShaders.DEFFUSE_POINT_LIGHT_FRAGMENT_SHADER;
+            textureDataHandle = meshObjects.get(0).loadTextureFromApk(textureImageFile, assetMenager);
+        }else {
+            vertexShader = SimpleLightColorShaders.DEFFUSE_POINT_LIGHT_VERTEX_SHADER;
+            fragmentShader = SimpleLightColorShaders.DEFFUSE_POINT_LIGHT_FRAGMENT_SHADER;
+        }
 
         final int vertexShaderHandle = compileShader(GLES20.GL_VERTEX_SHADER, vertexShader);
         final int fragmentShaderHandle = compileShader(GLES20.GL_FRAGMENT_SHADER, fragmentShader);
 
-        //mPerVertexProgramHandle = createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle,
-        //        new String[] {"a_Position",  "a_Color", "a_Normal","a_TexCoordinate"});
-        mPerVertexProgramHandle = createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle,
-                new String[]{"a_Position", "a_Normal","a_TexCoordinate"});
-
+        if(isTextureRenderer==TEXTURE_RENDERER) {
+            perVertexProgramHandle = createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle,
+                    new String[]{"a_Position", "a_Normal", "a_TexCoordinate"});
+        }else{
+            perVertexProgramHandle = createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle,
+                    new String[]{"a_Position", "a_Color"});
+        }
         // Define a simple shader program for our point.
         final String pointVertexShader =
                 "uniform mat4 u_MVPMatrix;      \n"
-                        +	"attribute vec4 a_Position;     \n"
+                        + "attribute vec4 a_Position;     \n"
                         + "void main()                    \n"
                         + "{                              \n"
                         + "   gl_Position = u_MVPMatrix   \n"
@@ -161,180 +164,165 @@ public class LightTextureRenderer implements GLSurfaceView.Renderer {
 
         final int pointVertexShaderHandle = compileShader(GLES20.GL_VERTEX_SHADER, pointVertexShader);
         final int pointFragmentShaderHandle = compileShader(GLES20.GL_FRAGMENT_SHADER, pointFragmentShader);
-        mPointProgramHandle = createAndLinkProgram(pointVertexShaderHandle, pointFragmentShaderHandle,
-                new String[] {"a_Position"});
+        pointProgramHandle = createAndLinkProgram(pointVertexShaderHandle, pointFragmentShaderHandle,
+                new String[]{"a_Position"});
 
-        for(MeshLoader mesh : meshObjects) {
-            int buffers[] = new int[3];
-            GLES20.glGenBuffers(3, buffers, 0);
+        if(isTextureRenderer==TEXTURE_RENDERER) {
+            for (MeshLoader mesh : meshObjects) {
+                int buffers[] = new int[3];
+                GLES20.glGenBuffers(3, buffers, 0);
 
-            int ibo[] = new int[1];
-            GLES20.glGenBuffers(1, ibo, 0);
+                int ibo[] = new int[1];
+                GLES20.glGenBuffers(1, ibo, 0);
 
-            mesh.mModelVertices.position(0);
-            GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, buffers[0]);
-            GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, mesh.mModelVertices.capacity() * mesh.mBytesPerFloat,
-                    mesh.mModelVertices, GLES20.GL_STATIC_DRAW);
-            GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
-            mesh.mCubePositionsBufferIdx = buffers[0];
+                mesh.getmModelVertices().position(0);
+                GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, buffers[0]);
+                GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, mesh.getmModelVertices().capacity() * mesh.getmBytesPerFloat(),
+                        mesh.getmModelVertices(), GLES20.GL_STATIC_DRAW);
+                GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
+                mesh.setmCubePositionsBufferIdx(buffers[0]);
 
-            mesh.mModelNormals.position(0);
-            GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, buffers[1]);
-            GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, mesh.mModelNormals.capacity() * mesh.mBytesPerFloat,
-                    mesh.mModelNormals, GLES20.GL_STATIC_DRAW);
-            GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
-            mesh.mCubeNormalsBufferIdx = buffers[1];
+                mesh.getmModelNormals().position(0);
+                GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, buffers[1]);
+                GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, mesh.getmModelNormals().capacity() * mesh.getmBytesPerFloat(),
+                        mesh.getmModelNormals(), GLES20.GL_STATIC_DRAW);
+                GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
+                mesh.setmCubeNormalsBufferIdx(buffers[1]);
 
-            mesh.mModelTextures.position(0);
-            GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, buffers[2]);
-            GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, mesh.mModelTextures.capacity() * mesh.mBytesPerFloat,
-                    mesh.mModelTextures, GLES20.GL_STATIC_DRAW);
-            GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
-            mesh.mCubeTexCoordsBufferIdx = buffers[2];
+                mesh.getmModelTextures().position(0);
+                GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, buffers[2]);
+                GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, mesh.getmModelTextures().capacity() * mesh.getmBytesPerFloat(),
+                        mesh.getmModelTextures(), GLES20.GL_STATIC_DRAW);
+                GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
+                mesh.setmCubeTexCoordsBufferIdx(buffers[2]);
 
 
-            mesh.mModelIndices.position(0);
-            GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, ibo[0]);
-            GLES20.glBufferData(GLES20.GL_ELEMENT_ARRAY_BUFFER, mesh.mCountIndices * mesh.mBytesPerShort,
-                    mesh.mModelIndices.asShortBuffer(), GLES20.GL_STATIC_DRAW);
-            GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0);
-            mesh.mCubeIndicesBufferIdx = ibo[0];
+                mesh.getmModelIndices().position(0);
+                GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, ibo[0]);
+                GLES20.glBufferData(GLES20.GL_ELEMENT_ARRAY_BUFFER, mesh.getmCountIndices() * mesh.getmBytesPerShort(),
+                        mesh.getmModelIndices().asShortBuffer(), GLES20.GL_STATIC_DRAW);
+                GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0);
+                mesh.setmCubeIndicesBufferIdx(ibo[0]);
 
-            buffers[0] = 0;
-            buffers[1] = 0;
-            buffers[2] = 0;
-            ibo[0] = 0;
+                buffers[0] = 0;
+                buffers[1] = 0;
+                buffers[2] = 0;
+                ibo[0] = 0;
+            }
         }
-    }
-
-    @Override
-    public void onSurfaceChanged(GL10 gl, int width, int height) {
-        // Set the OpenGL viewport to the same size as the surface.
-        GLES20.glViewport(0, 0, width, height);
-
-        // Create a new perspective projection matrix. The height will stay the same
-        // while the width will vary as per aspect ratio.
-        final float ratio = (float) width / height;
-        final float left = -ratio;
-        final float right = ratio;
-        final float bottom = -1.0f;
-
-        final float top = 1.0f;
-        final float near = 1.0f;
-        final float far = 10.0f;
-
-        Matrix.frustumM(mProjectionMatrix, 0, left, right, bottom, top, near, far);
     }
 
     @Override
     public void onDrawFrame(GL10 gl) {
-        //GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        //Ustawienia OpenGL
         GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
-        //GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-        //GLES20.glEnable(GLES20.GL_BLEND);
-        //GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
-
-        // Do a complete rotation every 10 seconds.
-        long time = SystemClock.uptimeMillis() % 10000L;
-        float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
-
-        // Set our per-vertex lighting program.
-        GLES20.glUseProgram(mPerVertexProgramHandle);
-
+        GLES20.glUseProgram(perVertexProgramHandle);
         GLES20.glFrontFace(GLES20.GL_CCW);
         GLES20.glDisable(GLES20.GL_CULL_FACE);
-        // Set program handles for cube drawing.
-        mMVPMatrixHandle = GLES20.glGetUniformLocation(mPerVertexProgramHandle, "u_MVPMatrix");
-        mMVMatrixHandle = GLES20.glGetUniformLocation(mPerVertexProgramHandle, "u_MVMatrix");
-        mLightPosHandle = GLES20.glGetUniformLocation(mPerVertexProgramHandle, "u_LightPos");
-        mPositionHandle = GLES20.glGetAttribLocation(mPerVertexProgramHandle, "a_Position");
-        mNormalHandle = GLES20.glGetAttribLocation(mPerVertexProgramHandle, "a_Normal");
-        mTextureUniformHandle = GLES20.glGetUniformLocation(mPerVertexProgramHandle, "u_Texture");
-        mTextureCoordinateHandle = GLES20.glGetAttribLocation(mPerVertexProgramHandle, "a_TexCoordinate");
 
+        //załadowanie uchwytów do atrybutów i związanie tekstury
+        if(isTextureRenderer==TEXTURE_RENDERER) {
+            MVPMatrixHandle = GLES20.glGetUniformLocation(perVertexProgramHandle, "u_MVPMatrix");
+            MVMatrixHandle = GLES20.glGetUniformLocation(perVertexProgramHandle, "u_MVMatrix");
+            lightPosHandle = GLES20.glGetUniformLocation(perVertexProgramHandle, "u_LightPos");
+            positionHandle = GLES20.glGetAttribLocation(perVertexProgramHandle, "a_Position");
+            normalHandle = GLES20.glGetAttribLocation(perVertexProgramHandle, "a_Normal");
+            textureUniformHandle = GLES20.glGetUniformLocation(perVertexProgramHandle, "u_Texture");
+            textureCoordinateHandle = GLES20.glGetAttribLocation(perVertexProgramHandle, "a_TexCoordinate");
 
-        // Set the active texture unit to texture unit 0.
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-
-        // Bind the texture to this unit.
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureDataHandle);
-
-        // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
-        GLES20.glUniform1i(mTextureUniformHandle, 0);
-
-
-        // Calculate position of the light. Rotate and then push into the distance.
-        Matrix.setIdentityM(mLightModelMatrix, 0);
-        Matrix.translateM(mLightModelMatrix, 0, 0.0f, 0.0f, -scale);
-
-        Matrix.multiplyMV(mLightPosInWorldSpace, 0, mLightModelMatrix, 0, mLightPosInModelSpace, 0);
-        Matrix.multiplyMV(mLightPosInEyeSpace, 0, mViewMatrix, 0, mLightPosInWorldSpace, 0);
-
-
-        for(MeshLoader mesh : meshObjects) {
-            Matrix.setIdentityM(mModelMatrix, 0);
-            Matrix.translateM(mModelMatrix, 0, 0.0f, -1.0f, -scale);
-            Matrix.rotateM(mModelMatrix, 0, mAngle, 0.0f, 1.0f, 0.0f);
-            drawModel(mesh, mesh.mCubePositionsBufferIdx, mesh.mCubeNormalsBufferIdx,
-                    mesh.mCubeTexCoordsBufferIdx, mesh.mCubeIndicesBufferIdx);
+            GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureDataHandle);
+            GLES20.glUniform1i(textureUniformHandle, 0);
+        }else {
+            MVPMatrixHandle = GLES20.glGetUniformLocation(perVertexProgramHandle, "u_MVPMatrix");
+            positionHandle = GLES20.glGetAttribLocation(perVertexProgramHandle, "a_Position");
+            colorHandle = GLES20.glGetAttribLocation(perVertexProgramHandle, "a_Color");
+            //GLES20.glUseProgram(perVertexProgramHandle);
         }
 
-        // Draw a point to indicate the light.
-        GLES20.glUseProgram(mPointProgramHandle);
+        Matrix.setIdentityM(lightModelMatrix, 0);
+        Matrix.translateM(lightModelMatrix, 0, 0.0f, 0.0f, -scale);
+        Matrix.multiplyMV(lightPosInWorldSpace, 0, lightModelMatrix, 0, lightPosInModelSpace, 0);
+        Matrix.multiplyMV(lightPosInEyeSpace, 0, viewMatrix, 0, lightPosInWorldSpace, 0);
+
+        for (MeshLoader mesh : meshObjects) {
+            Matrix.setIdentityM(modelMatrix, 0);
+            translateM();
+            drawModel(mesh, mesh.getmCubePositionsBufferIdx(), mesh.getmCubeNormalsBufferIdx(),
+                    mesh.getmCubeTexCoordsBufferIdx(), mesh.getmCubeIndicesBufferIdx());
+        }
+
+        GLES20.glUseProgram(pointProgramHandle);
         drawLight();
+    }
+
+    protected void translateM(){
+        Matrix.translateM(modelMatrix, 0, 0.0f, -1.0f, -scale);
+        Matrix.rotateM(modelMatrix, 0, angle, 0.0f, 1.0f, 0.0f);
     }
 
     private void drawModel(MeshLoader meshLoc, int bufVert, int bufNorms,int bufText,int bufInd)
     {
+        if(isTextureRenderer==TEXTURE_RENDERER) {
+            //IDX_CPU
+            GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, bufVert);
+            GLES20.glEnableVertexAttribArray(positionHandle);
+            GLES20.glVertexAttribPointer(positionHandle, meshLoc.getmPositionDataSize(), GLES20.GL_FLOAT, false, 0, 0);
 
-        //przekazanie informacji o kolorach do OpenGL
-        /*mModelColors.position(0);
-        GLES20.glVertexAttribPointer(mColorHandle, mColorDataSize, GLES20.GL_FLOAT, false,
-                mStrideBytesColor, mModelColors);
-        GLES20.glEnableVertexAttribArray(mColorHandle);*/
+            GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, bufNorms);
+            GLES20.glEnableVertexAttribArray(normalHandle);
+            GLES20.glVertexAttribPointer(normalHandle, meshLoc.getmNormalDataSize(), GLES20.GL_FLOAT, false, 0, 0);
 
-        //IDX_CPU
-        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, bufVert);
-        GLES20.glEnableVertexAttribArray(mPositionHandle);
-        GLES20.glVertexAttribPointer(mPositionHandle, meshLoc.mPositionDataSize, GLES20.GL_FLOAT, false, 0, 0);
+            GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, bufText);
+            GLES20.glEnableVertexAttribArray(textureCoordinateHandle);
+            GLES20.glVertexAttribPointer(textureCoordinateHandle, meshLoc.getmTextureDataSize(), GLES20.GL_FLOAT, false, 0, 0);
 
-        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, bufNorms);
-        GLES20.glEnableVertexAttribArray(mNormalHandle);
-        GLES20.glVertexAttribPointer(mNormalHandle, meshLoc.mNormalDataSize, GLES20.GL_FLOAT, false, 0, 0);
+            GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, bufInd);
 
-        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, bufText);
-        GLES20.glEnableVertexAttribArray(mTextureCoordinateHandle);
-        GLES20.glVertexAttribPointer(mTextureCoordinateHandle, meshLoc.mTextureDataSize, GLES20.GL_FLOAT, false, 0, 0);
+            // Utworzenie macierzy Model x View i przekazanie jej do OpenGL w celu kalkulacji światła
+            Matrix.multiplyMM(MVPMatrix, 0, viewMatrix, 0, modelMatrix, 0);
+            GLES20.glUniformMatrix4fv(MVMatrixHandle, 1, false, MVPMatrix, 0);
 
-        GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, bufInd);
+            // Utworzenie macierzy Model x View x Projection i przekazanie do OpenGl
+            Matrix.multiplyMM(MVPMatrix, 0, projectionMatrix, 0, MVPMatrix, 0);
+            GLES20.glUniformMatrix4fv(MVPMatrixHandle, 1, false, MVPMatrix, 0);
 
-        // Utworzenie macierzy Model x View i przekazanie jej do OpenGL w celu kalkulacji światła
-        Matrix.multiplyMM(mMVPMatrix, 0, mViewMatrix, 0, mModelMatrix, 0);
-        GLES20.glUniformMatrix4fv(mMVMatrixHandle, 1, false, mMVPMatrix, 0);
+            // Przekazanie pozycji światła w przestrzeni widoku
+            GLES20.glUniform3f(lightPosHandle, lightPosInEyeSpace[0], lightPosInEyeSpace[1], lightPosInEyeSpace[2]);
 
-        // Utworzenie macierzy Model x View x Projection i przekazanie do OpenGl
-        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mMVPMatrix, 0);
-        GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mMVPMatrix, 0);
+            //Rysowanie modelu bez indeksu
+            //GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, mesh.mCountVertices);
 
-        // Przekazanie pozycji światła w przestrzeni widoku
-        GLES20.glUniform3f(mLightPosHandle, mLightPosInEyeSpace[0], mLightPosInEyeSpace[1], mLightPosInEyeSpace[2]);
+            //IDX_CPU Rysowanie modelu z indeksem,z ładowaymi buforami do opengl
+            GLES20.glDrawElements(GLES20.GL_TRIANGLES,
+                    meshLoc.getmCountIndices(),
+                    GLES20.GL_UNSIGNED_SHORT, 0);
 
-        //Rysowanie modelu bez indeksu
-        //GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, mesh.mCountVertices);
+            //IDX Rysowanie modelu z indeksem, bez ładowania buforów do opengl
+            /*GLES20.glDrawElements(GLES20.GL_TRIANGLES,
+              mesh.mCountIndices,
+              GLES20.GL_UNSIGNED_SHORT, mesh.mModelIndices);*/
 
-        //IDX_CPU Rysowanie modelu z indeksem,z ładowaymi buforami do opengl
-        GLES20.glDrawElements(GLES20.GL_TRIANGLES,
-                meshLoc.mCountIndices,
-                GLES20.GL_UNSIGNED_SHORT, 0);
+            //IDX_CPU
+            GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
+            GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0);
+        }else{
+            meshLoc.getmModelColors().position(meshLoc.getmPositionOffset());
+            GLES20.glVertexAttribPointer(positionHandle, meshLoc.getmPositionDataSize(), GLES20.GL_FLOAT, false,
+                    meshLoc.getmStrideBytesColor(), meshLoc.getmModelColors());
+            GLES20.glEnableVertexAttribArray(positionHandle);
 
-        //IDX Rysowanie modelu z indeksem, bez ładowania buforów do opengl
-        /*GLES20.glDrawElements(GLES20.GL_TRIANGLES,
-                mesh.mCountIndices,
-                GLES20.GL_UNSIGNED_SHORT, mesh.mModelIndices);*/
+            meshLoc.getmModelColors().position(meshLoc.getmColorOffset());
+            GLES20.glVertexAttribPointer(colorHandle, meshLoc.getmColorDataSize(), GLES20.GL_FLOAT, false,
+                    meshLoc.getmStrideBytesColor(), meshLoc.getmModelColors());
+            GLES20.glEnableVertexAttribArray(colorHandle);
 
-        //IDX_CPU
-        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
-        GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0);
+            Matrix.multiplyMM(MVPMatrix, 0, viewMatrix, 0, modelMatrix, 0);
+            Matrix.multiplyMM(MVPMatrix, 0, projectionMatrix, 0, MVPMatrix, 0);
+
+            GLES20.glUniformMatrix4fv(MVPMatrixHandle, 1, false, MVPMatrix, 0);
+            GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, meshLoc.getmCountColors());
+        }
     }
 
     /**
@@ -342,50 +330,30 @@ public class LightTextureRenderer implements GLSurfaceView.Renderer {
      */
     private void drawLight()
     {
-        final int pointMVPMatrixHandle = GLES20.glGetUniformLocation(mPointProgramHandle, "u_MVPMatrix");
-        final int pointPositionHandle = GLES20.glGetAttribLocation(mPointProgramHandle, "a_Position");
-
-        // Pass in the position.
-        GLES20.glVertexAttrib3f(pointPositionHandle, mLightPosInModelSpace[0], mLightPosInModelSpace[1], mLightPosInModelSpace[2]);
-
-        // Since we are not using a buffer object, disable vertex arrays for this attribute.
+        final int pointMVPMatrixHandle = GLES20.glGetUniformLocation(pointProgramHandle, "u_MVPMatrix");
+        final int pointPositionHandle = GLES20.glGetAttribLocation(pointProgramHandle, "a_Position");
+        GLES20.glVertexAttrib3f(pointPositionHandle, lightPosInModelSpace[0], lightPosInModelSpace[1], lightPosInModelSpace[2]);
         GLES20.glDisableVertexAttribArray(pointPositionHandle);
-
-        // Pass in the transformation matrix.
-        Matrix.multiplyMM(mMVPMatrix, 0, mViewMatrix, 0, mLightModelMatrix, 0);
-        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mMVPMatrix, 0);
-        GLES20.glUniformMatrix4fv(pointMVPMatrixHandle, 1, false, mMVPMatrix, 0);
-
-        // Draw the point.
+        Matrix.multiplyMM(MVPMatrix, 0, viewMatrix, 0, lightModelMatrix, 0);
+        Matrix.multiplyMM(MVPMatrix, 0, projectionMatrix, 0, MVPMatrix, 0);
+        GLES20.glUniformMatrix4fv(pointMVPMatrixHandle, 1, false, MVPMatrix, 0);
         GLES20.glDrawArrays(GLES20.GL_POINTS, 0, 1);
     }
 
     /**
      * Helper function to compile a shader.
-     *
-     * @param shaderType The shader type.
-     * @param shaderSource The shader source code.
-     * @return An OpenGL handle to the shader.
      */
     private int compileShader(final int shaderType, final String shaderSource)
     {
         int shaderHandle = GLES20.glCreateShader(shaderType);
         if (shaderHandle != 0)
         {
-            // Pass in the shader source.
             GLES20.glShaderSource(shaderHandle, shaderSource);
-
-            // Compile the shader.
             GLES20.glCompileShader(shaderHandle);
-
-            // Get the compilation status.
             final int[] compileStatus = new int[1];
             GLES20.glGetShaderiv(shaderHandle, GLES20.GL_COMPILE_STATUS, compileStatus, 0);
-
-            // If the compilation failed, delete the shader.
             if (compileStatus[0] == 0)
             {
-                Log.e(LOGTAG, "Error compiling program: " + GLES20.glGetProgramInfoLog(shaderHandle));
                 GLES20.glDeleteShader(shaderHandle);
                 shaderHandle = 0;
             }
@@ -400,12 +368,7 @@ public class LightTextureRenderer implements GLSurfaceView.Renderer {
     }
 
     /**
-     * Helper function to compile and link a program.
-     *
-     * @param vertexShaderHandle An OpenGL handle to an already-compiled vertex shader.
-     * @param fragmentShaderHandle An OpenGL handle to an already-compiled fragment shader.
-     * @param attributes Attributes that need to be bound to the program.
-     * @return An OpenGL handle to the program.
+     * Tworzy i podłącza program zawierający vertex,fragment-shader
      */
     private int createAndLinkProgram(final int vertexShaderHandle, final int fragmentShaderHandle, final String[] attributes)
     {
@@ -413,13 +376,8 @@ public class LightTextureRenderer implements GLSurfaceView.Renderer {
 
         if (programHandle != 0)
         {
-            // Bind the vertex shader to the program.
             GLES20.glAttachShader(programHandle, vertexShaderHandle);
-
-            // Bind the fragment shader to the program.
             GLES20.glAttachShader(programHandle, fragmentShaderHandle);
-
-            // Bind attributes
             if (attributes != null)
             {
                 final int size = attributes.length;
@@ -428,52 +386,44 @@ public class LightTextureRenderer implements GLSurfaceView.Renderer {
                     GLES20.glBindAttribLocation(programHandle, i, attributes[i]);
                 }
             }
-
-            // Link the two shaders together into a program.
             GLES20.glLinkProgram(programHandle);
-
-            // Get the link status.
             final int[] linkStatus = new int[1];
             GLES20.glGetProgramiv(programHandle, GLES20.GL_LINK_STATUS, linkStatus, 0);
-
-            // If the link failed, delete the program.
             if (linkStatus[0] == 0)
             {
-                Log.e(LOGTAG, "Error compiling program: " + GLES20.glGetProgramInfoLog(programHandle));
                 GLES20.glDeleteProgram(programHandle);
                 programHandle = 0;
             }
         }
-
         if (programHandle == 0)
         {
             throw new RuntimeException("Error creating program.");
         }
-
         return programHandle;
     }
 
     public void releaseBuffers() {
         for(MeshLoader mesh : meshObjects) {
-            final int[] buffersToDelete = new int[]{mesh.mCubeIndicesBufferIdx, mesh.mCubeNormalsBufferIdx,
-                    mesh.mCubePositionsBufferIdx, mesh.mCubePositionsBufferIdx};
+            final int[] buffersToDelete = new int[]{mesh.getmCubeIndicesBufferIdx(), mesh.getmCubeNormalsBufferIdx(),
+                    mesh.getmCubePositionsBufferIdx(), mesh.getmCubePositionsBufferIdx()};
             GLES20.glDeleteBuffers(buffersToDelete.length, buffersToDelete, 0);
-            mesh.mCubeIndicesBufferIdx = 0;
-            mesh.mCubeNormalsBufferIdx = 0;
-            mesh.mCubePositionsBufferIdx = 0;
-            mesh.mCubePositionsBufferIdx = 0;
+            mesh.setmCubeIndicesBufferIdx(0);
+            mesh.setmCubeNormalsBufferIdx(0);
+            mesh.setmCubePositionsBufferIdx(0);
+            mesh.setmCubePositionsBufferIdx(0);
         }
     }
 
-    public float getAngle() {
-        return mAngle;
+    float getAngle() {
+        return angle;
     }
 
-    public void setAngle(float angle) {
-        mAngle = angle;
+    void setAngle(float angle) {
+        this.angle = angle;
     }
 
-    public void setScale(float scale){
+    void setScale(float scale){
         this.scale = scale;
     }
+
 }

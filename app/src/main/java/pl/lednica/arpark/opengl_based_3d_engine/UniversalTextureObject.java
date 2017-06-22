@@ -14,7 +14,7 @@ import pl.lednica.arpark.helpers.ObjectModel;
 public class UniversalTextureObject extends LightTextureRenderer {
     public Vector<ObjectFiles> objectFilesVector = new Vector<>();
     public UniversalTextureObject(ObjectExplorer3DActivity activity, ObjectModel objectModel) {
-        super(activity);
+        super(activity,true);
         String path = objectModel.getModelPath();
         String model = objectModel.getModelName();
         String textureImage = objectModel.getTextureImage();

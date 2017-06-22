@@ -48,8 +48,6 @@ public class ObjectExplorerTabActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //Załadowanei obiektów i ich prezętacja
         jsonUtils  = new ObjectJsonUtils(this.getApplicationContext());
         objects = jsonUtils.getObjectsList();
         setContentView(R.layout.activity_object_explorer_tab);

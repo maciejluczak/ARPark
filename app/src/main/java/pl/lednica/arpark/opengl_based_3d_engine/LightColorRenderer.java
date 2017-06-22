@@ -230,7 +230,7 @@ public class LightColorRenderer implements GLSurfaceView.Renderer {
         final float upZ = 0.0f;
         Matrix.setLookAtM(mViewMatrix, 0, eyeX, eyeY, eyeZ, lookX, lookY, lookZ, upX, upY, upZ);
         Matrix.translateM(mModelMatrix,0,0.0f,0.0f ,-1.5f);
-        drawModel(meschObject.mModelColors);
+        drawModel(meschObject.getmModelColors());
     }
 
     private void drawModel(final FloatBuffer aTriangleBuffer)
@@ -258,7 +258,7 @@ public class LightColorRenderer implements GLSurfaceView.Renderer {
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mMVPMatrix, 0);
 
         GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mMVPMatrix, 0);
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, meschObject.mCountColors);
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, meschObject.getmCountColors());
         //GLES20.glDrawElements(GLES20.GL_TRIANGLES,4,GLES20.GL_FLOAT,0);
     }
 }
