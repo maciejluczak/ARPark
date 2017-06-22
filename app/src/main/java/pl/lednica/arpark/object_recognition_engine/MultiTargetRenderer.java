@@ -180,6 +180,7 @@ public class MultiTargetRenderer implements GLSurfaceView.Renderer
         // Did we find any trackables this frame?
         if (state.getNumTrackableResults() != 0)
         {
+            Log.d("renderFrame", "znalazlem");
             // Get the trackable:
             TrackableResult result = null;
             int numResults = state.getNumTrackableResults();

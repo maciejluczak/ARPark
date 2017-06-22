@@ -318,9 +318,9 @@ public class ChurchActivity extends Activity implements CustomApplicationControl
         // identical visual results:
         // create a cuboid with width = 90 ; height = 120 ; length = 60.
 
-        String names[] = { "FlakesBox.Front", "FlakesBox.Back",
-                "FlakesBox.Left", "FlakesBox.Right", "FlakesBox.Top",
-                "FlakesBox.Bottom" };
+        String names[] = { "wphmarker.Front", "wphmarker.Back",
+                "wphmarker.Left", "wphmarker.Right", "wphmarker.Top",
+                "wphmarker.Bottom" };
         float trans[] = { 0.0f, 0.0f, 30.0f, 0.0f, 0.0f, -30.0f, -45.0f, 0.0f,
                 0.0f, 45.0f, 0.0f, 0.0f, 0.0f, 60.0f, 0.0f, 0.0f, -60.0f, 0.0f };
         float rots[] = { 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 180.0f,
@@ -353,7 +353,7 @@ public class ChurchActivity extends Activity implements CustomApplicationControl
         if (mit == null)
         {
             Log.d(LOGTAG, "No MultiTarget found -> creating one");
-            mit = dataSet.createMultiTarget("FlakesBox");
+            mit = dataSet.createMultiTarget("wphmarker");
 
             if (mit == null)
             {
@@ -479,7 +479,7 @@ public class ChurchActivity extends Activity implements CustomApplicationControl
         }
 
         // Load the data set:
-        if (!dataSet.load("MultiTargets/FlakesBox.xml",
+        if (!dataSet.load("Target/WPH.xml",
                 STORAGE_TYPE.STORAGE_APPRESOURCE))
         {
             Log.d(LOGTAG, "Failed to load data set.");
