@@ -477,7 +477,7 @@ public class ChurchActivity extends Activity implements SampleApplicationControl
         }
 
         // Load the data set:
-        if (!dataSet.load("MultiTargets/FlakesBox.xml",
+        if (!dataSet.load("Target/WHP.xml",
                 STORAGE_TYPE.STORAGE_APPRESOURCE))
         {
             Log.d(LOGTAG, "Failed to load data set.");
