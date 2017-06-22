@@ -37,22 +37,22 @@ import java.util.Vector;
 
 import pl.lednica.arpark.R;
 import pl.lednica.arpark.object_recognition_engine.ChurchObject;
+import pl.lednica.arpark.object_recognition_engine.CustomApplicationSession;
 import pl.lednica.arpark.object_recognition_engine.LoadingDialogHandler;
 import pl.lednica.arpark.object_recognition_engine.MultiTargetRenderer;
-import pl.lednica.arpark.object_recognition_engine.SampleApplicationControl;
-import pl.lednica.arpark.object_recognition_engine.SampleApplicationException;
-import pl.lednica.arpark.object_recognition_engine.SampleApplicationGLView;
-import pl.lednica.arpark.object_recognition_engine.SampleApplicationSession;
+import pl.lednica.arpark.object_recognition_engine.CustomApplicationControl;
+import pl.lednica.arpark.object_recognition_engine.CustomApplicationException;
+import pl.lednica.arpark.object_recognition_engine.CustomApplicationGLView;
 import pl.lednica.arpark.object_recognition_engine.Texture;
 
-public class ChurchActivity extends Activity implements SampleApplicationControl
+public class ChurchActivity extends Activity implements CustomApplicationControl
     {
         private static final String LOGTAG = "MultiTargets";
 
-        SampleApplicationSession vuforiaAppSession;
+        CustomApplicationSession vuforiaAppSession;
 
         // Our OpenGL view:
-        private SampleApplicationGLView mGlView;
+        private CustomApplicationGLView mGlView;
 
         // Our renderer:
         private MultiTargetRenderer mRenderer;
@@ -87,7 +87,7 @@ public class ChurchActivity extends Activity implements SampleApplicationControl
             Log.d(LOGTAG, "onCreate");
             super.onCreate(savedInstanceState);
 
-            vuforiaAppSession = new SampleApplicationSession(this);
+            vuforiaAppSession = new CustomApplicationSession(this);
 
             startLoadingAnimation();
 
@@ -170,7 +170,7 @@ public class ChurchActivity extends Activity implements SampleApplicationControl
         try
         {
             vuforiaAppSession.resumeAR();
-        } catch (SampleApplicationException e)
+        } catch (CustomApplicationException e)
         {
             Log.e(LOGTAG, e.getString());
         }
@@ -211,7 +211,7 @@ public class ChurchActivity extends Activity implements SampleApplicationControl
         try
         {
             vuforiaAppSession.pauseAR();
-        } catch (SampleApplicationException e)
+        } catch (CustomApplicationException e)
         {
             Log.e(LOGTAG, e.getString());
         }
@@ -228,7 +228,7 @@ public class ChurchActivity extends Activity implements SampleApplicationControl
         try
         {
             vuforiaAppSession.stopAR();
-        } catch (SampleApplicationException e)
+        } catch (CustomApplicationException e)
         {
             Log.e(LOGTAG, e.getString());
         }
@@ -280,15 +280,17 @@ public class ChurchActivity extends Activity implements SampleApplicationControl
         boolean translucent = Vuforia.requiresAlpha();
 
         // Stworzenie widoku OpenGli
-        mGlView = new SampleApplicationGLView(this);
+        mGlView = new CustomApplicationGLView(this);
         mGlView.init(translucent, depthSize, stencilSize);
 
         // Stworzenie w nim  renderera od renderowania :)
-        try {
-            mRenderer = new MultiTargetRenderer(vuforiaAppSession, new ChurchObject(getResources().getAssets()));
-        }catch (IOException e){
-            Log.e(LOGTAG,"IOException load church model");
-        }
+//        try {
+//            mRenderer = new MultiTargetRenderer(vuforiaAppSession, new ChurchObject(getResources().getAssets()));
+//
+//        }catch (IOException e){
+//            Log.e(LOGTAG,"IOException load church model");
+//        }
+        mRenderer = new MultiTargetRenderer(vuforiaAppSession, new ChurchObject());
 
         mRenderer.setTextures(mTextures);
         mGlView.setRenderer(mRenderer);
@@ -583,7 +585,7 @@ public class ChurchActivity extends Activity implements SampleApplicationControl
 
 
     @Override
-    public void onInitARDone(SampleApplicationException exception)
+    public void onInitARDone(CustomApplicationException exception)
     {
 
         if (exception == null)
@@ -612,7 +614,7 @@ public class ChurchActivity extends Activity implements SampleApplicationControl
             try
             {
                 vuforiaAppSession.startAR(CameraDevice.CAMERA_DIRECTION.CAMERA_DIRECTION_DEFAULT);
-            } catch (SampleApplicationException e)
+            } catch (CustomApplicationException e)
             {
                 Log.e(LOGTAG, e.getString());
             }

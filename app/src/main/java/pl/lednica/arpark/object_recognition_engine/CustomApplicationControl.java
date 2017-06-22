@@ -11,9 +11,9 @@ countries.
 import com.vuforia.State;
 
 
-//  Interface to be implemented by the activity which uses SampleApplicationSession
-// Interfejs dla aktywnosci dziedziczacych z SampleApplicationSession
-public interface SampleApplicationControl
+//  Interface to be implemented by the activity which uses CustomApplicationSession
+// Interfejs dla aktywnosci dziedziczacych z CustomApplicationSession
+public interface CustomApplicationControl
 {
 
     // To be called to initialize the trackers
@@ -51,7 +51,7 @@ public interface SampleApplicationControl
     // the trackers are initialized, their data loaded and
     // tracking is ready to start
     // Kiedy Vuforia wszystko ladnie zrobi
-    void onInitARDone(SampleApplicationException e);
+    void onInitARDone(CustomApplicationException e);
 
 
     // This callback is called every cycle

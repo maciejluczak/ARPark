@@ -22,16 +22,6 @@ import java.util.Vector;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import java.util.Vector;
-
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
-
-import android.opengl.GLES20;
-import android.opengl.GLSurfaceView;
-import android.opengl.Matrix;
-import android.util.Log;
-
 import com.vuforia.Matrix44F;
 import com.vuforia.MultiTargetResult;
 import com.vuforia.Renderer;
@@ -40,9 +30,6 @@ import com.vuforia.Tool;
 import com.vuforia.TrackableResult;
 import com.vuforia.VIDEO_BACKGROUND_REFLECTION;
 import com.vuforia.Vuforia;
-import pl.lednica.arpark.object_recognition_engine.CubeShaders;
-import pl.lednica.arpark.object_recognition_engine.SampleUtils;
-import pl.lednica.arpark.object_recognition_engine.Texture;
 
 
 // The renderer class for the MultiTargets sample.
@@ -50,7 +37,7 @@ public class MultiTargetRenderer implements GLSurfaceView.Renderer
 {
     private static final String LOGTAG = "MultiTargetRenderer";
 
-    private SampleApplicationSession vuforiaAppSession;
+    private CustomApplicationSession vuforiaAppSession;
 
     public boolean mIsActive = false;
 
@@ -81,7 +68,7 @@ public class MultiTargetRenderer implements GLSurfaceView.Renderer
 
 
 
-    public MultiTargetRenderer(SampleApplicationSession session, BowlAndSpoonObject object)
+    public MultiTargetRenderer(CustomApplicationSession session, BowlAndSpoonObject object)
     {
         vuforiaAppSession = session;
         bowlAndSpoonObject = object;
@@ -149,7 +136,7 @@ public class MultiTargetRenderer implements GLSurfaceView.Renderer
                     GLES20.GL_UNSIGNED_BYTE, t.mData);
         }
 
-        shaderProgramID = SampleUtils.createProgramFromShaderSrc(
+        shaderProgramID = CustomUtils.createProgramFromShaderSrc(
                 CubeShaders.CUBE_MESH_VERTEX_SHADER,
                 CubeShaders.CUBE_MESH_FRAGMENT_SHADER);
 
@@ -170,7 +157,7 @@ public class MultiTargetRenderer implements GLSurfaceView.Renderer
     {
         float ratio = (float)  widthT/ heightT;
 
-        SampleUtils.checkGLError("Check gl errors prior render Frame");
+        CustomUtils.checkGLError("Check gl errors prior render Frame");
 
         // Clear color and depth buffer
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
@@ -313,7 +300,7 @@ public class MultiTargetRenderer implements GLSurfaceView.Renderer
             GLES20.glDisableVertexAttribArray(normalHandle);
             GLES20.glDisableVertexAttribArray(textureCoordHandle);
 
-            SampleUtils.checkGLError("MultiTargets renderFrame");
+            CustomUtils.checkGLError("MultiTargets renderFrame");
 
         }
 
