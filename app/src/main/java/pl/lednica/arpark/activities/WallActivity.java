@@ -149,8 +149,6 @@ public class WallActivity extends Activity implements CustomApplicationControl
     {
         mTextures.add(Texture.loadTextureFromApk(
                 "Textures/wall.png", getAssets()));
-        mTextures.add(Texture.loadTextureFromApk(
-                "Textures/wall.png", getAssets()));
     }
 
 

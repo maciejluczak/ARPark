@@ -290,7 +290,7 @@ public class MultiTargetRenderer implements GLSurfaceView.Renderer
                     GLES20.GL_FLOAT, false, 0, bowlAndSpoonObject.getTexCoords());
 
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D,
-                    mTextures.get(1).mTextureID[0]);
+                    mTextures.get(0).mTextureID[0]);
             GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false,
                     modelViewProjection, 0);
             GLES20.glDrawElements(GLES20.GL_TRIANGLES,

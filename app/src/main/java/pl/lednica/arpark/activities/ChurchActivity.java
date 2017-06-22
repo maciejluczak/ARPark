@@ -147,9 +147,7 @@ public class ChurchActivity extends Activity implements CustomApplicationControl
     private void loadTextures()
     {
         mTextures.add(Texture.loadTextureFromApk(
-                "MultiTargets/TextureBowlAndSpoon.png", getAssets()));
-        mTextures.add(Texture.loadTextureFromApk(
-                "MultiTargets/TextureBowlAndSpoon.png", getAssets()));
+                "Textures/church.png", getAssets()));
     }
 
 
