@@ -13,7 +13,7 @@ countries.
 ===============================================================================*/
 
 // Used to send back to the activity any error during vuforia processes
-public class SampleApplicationException extends Exception
+public class CustomApplicationException extends Exception
 {
 
     private static final long serialVersionUID = 2L;
@@ -32,7 +32,7 @@ public class SampleApplicationException extends Exception
     private String mString = "";
 
 
-    public SampleApplicationException(int code, String description)
+    public CustomApplicationException(int code, String description)
     {
         super(description);
         mCode = code;

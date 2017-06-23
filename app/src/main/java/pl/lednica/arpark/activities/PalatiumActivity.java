@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Handler;
@@ -39,24 +38,23 @@ import java.io.IOException;
 import java.util.Vector;
 
 import pl.lednica.arpark.R;
-import pl.lednica.arpark.object_recognition_engine.BowlAndSpoonObject;
+import pl.lednica.arpark.object_recognition_engine.CustomApplicationSession;
 import pl.lednica.arpark.object_recognition_engine.LoadingDialogHandler;
 import pl.lednica.arpark.object_recognition_engine.MultiTargetRenderer;
 import pl.lednica.arpark.object_recognition_engine.PalatiumObject;
-import pl.lednica.arpark.object_recognition_engine.SampleApplicationControl;
-import pl.lednica.arpark.object_recognition_engine.SampleApplicationException;
-import pl.lednica.arpark.object_recognition_engine.SampleApplicationGLView;
-import pl.lednica.arpark.object_recognition_engine.SampleApplicationSession;
+import pl.lednica.arpark.object_recognition_engine.CustomApplicationControl;
+import pl.lednica.arpark.object_recognition_engine.CustomApplicationException;
+import pl.lednica.arpark.object_recognition_engine.CustomApplicationGLView;
 import pl.lednica.arpark.object_recognition_engine.Texture;
 
-public class PalatiumActivity extends Activity implements SampleApplicationControl
+public class PalatiumActivity extends Activity implements CustomApplicationControl
 {
     private static final String LOGTAG = "MultiTargets";
 
-    SampleApplicationSession vuforiaAppSession;
+    CustomApplicationSession vuforiaAppSession;
 
     // Our OpenGL view:
-    private SampleApplicationGLView mGlView;
+    private CustomApplicationGLView mGlView;
 
     // Our renderer:
     private MultiTargetRenderer mRenderer;
@@ -91,7 +89,7 @@ public class PalatiumActivity extends Activity implements SampleApplicationContr
         Log.d(LOGTAG, "onCreate");
         super.onCreate(savedInstanceState);
 
-        vuforiaAppSession = new SampleApplicationSession(this);
+        vuforiaAppSession = new CustomApplicationSession(this);
 
         startLoadingAnimation();
 
@@ -174,7 +172,7 @@ public class PalatiumActivity extends Activity implements SampleApplicationContr
         try
         {
             vuforiaAppSession.resumeAR();
-        } catch (SampleApplicationException e)
+        } catch (CustomApplicationException e)
         {
             Log.e(LOGTAG, e.getString());
         }
@@ -215,7 +213,7 @@ public class PalatiumActivity extends Activity implements SampleApplicationContr
         try
         {
             vuforiaAppSession.pauseAR();
-        } catch (SampleApplicationException e)
+        } catch (CustomApplicationException e)
         {
             Log.e(LOGTAG, e.getString());
         }
@@ -232,7 +230,7 @@ public class PalatiumActivity extends Activity implements SampleApplicationContr
         try
         {
             vuforiaAppSession.stopAR();
-        } catch (SampleApplicationException e)
+        } catch (CustomApplicationException e)
         {
             Log.e(LOGTAG, e.getString());
         }
@@ -284,7 +282,7 @@ public class PalatiumActivity extends Activity implements SampleApplicationContr
         boolean translucent = Vuforia.requiresAlpha();
 
         // Stworzenie widoku OpenGli
-        mGlView = new SampleApplicationGLView(this);
+        mGlView = new CustomApplicationGLView(this);
         mGlView.init(translucent, depthSize, stencilSize);
 
         // Stworzenie w nim  renderera od renderowania :)
@@ -587,7 +585,7 @@ public class PalatiumActivity extends Activity implements SampleApplicationContr
 
 
     @Override
-    public void onInitARDone(SampleApplicationException exception)
+    public void onInitARDone(CustomApplicationException exception)
     {
 
         if (exception == null)
@@ -616,7 +614,7 @@ public class PalatiumActivity extends Activity implements SampleApplicationContr
             try
             {
                 vuforiaAppSession.startAR(CameraDevice.CAMERA_DIRECTION.CAMERA_DIRECTION_DEFAULT);
-            } catch (SampleApplicationException e)
+            } catch (CustomApplicationException e)
             {
                 Log.e(LOGTAG, e.getString());
             }

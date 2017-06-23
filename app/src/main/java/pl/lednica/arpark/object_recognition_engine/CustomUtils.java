@@ -13,7 +13,7 @@ import android.opengl.GLES20;
 import android.util.Log;
 
 
-public class SampleUtils
+public class CustomUtils
 {
     
     private static final String LOGTAG = "Lednica";

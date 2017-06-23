@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QCARConfig>
+    <Tracking>
+        <ImageTarget name="wphmarker.Right" size="300.000000 206.000000"/>
+        <ImageTarget name="wphmarker.Front" size="300.000000 206.000000"/>
+        <ImageTarget name="wphmarker.Left" size="300.000000 206.000000"/>
+        <MultiTarget name="wphmarker">
+            <Part name="wphmarker.Left" translation="-150 0 0" rotation="AD: 1 0 0 0"/>
+            <Part name="wphmarker.Right" translation="150 0 0" rotation="AD: 1 0 0 0"/>
+            <Part name="wphmarker.Front" translation="0 -206 0" rotation="AD: 1 0 0 0"/>
+        </MultiTarget>
+    </Tracking>
+</QCARConfig>
