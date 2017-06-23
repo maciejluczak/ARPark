@@ -54,7 +54,7 @@ public class MultiTargetRenderer implements GLSurfaceView.Renderer
     private double prevTime;
     private float rotateAngle;
 
-    private BowlAndSpoonObject bowlAndSpoonObject;
+    private MeshObject bowlAndSpoonObject;
 
     // Constants:
     final static float kCubeScaleX = 120.0f * 0.75f / 2.0f;
@@ -68,7 +68,7 @@ public class MultiTargetRenderer implements GLSurfaceView.Renderer
 
 
 
-    public MultiTargetRenderer(CustomApplicationSession session, BowlAndSpoonObject object)
+    public MultiTargetRenderer(CustomApplicationSession session, MeshObject object)
     {
         vuforiaAppSession = session;
         bowlAndSpoonObject = object;
@@ -290,7 +290,7 @@ public class MultiTargetRenderer implements GLSurfaceView.Renderer
                     GLES20.GL_FLOAT, false, 0, bowlAndSpoonObject.getTexCoords());
 
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D,
-                    mTextures.get(1).mTextureID[0]);
+                    mTextures.get(0).mTextureID[0]);
             GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false,
                     modelViewProjection, 0);
             GLES20.glDrawElements(GLES20.GL_TRIANGLES,
