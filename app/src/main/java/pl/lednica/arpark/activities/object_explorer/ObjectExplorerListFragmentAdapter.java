@@ -42,16 +42,16 @@ public class ObjectExplorerListFragmentAdapter extends RecyclerView.Adapter<Obje
 
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
-        holder.info_name.setText(Html.fromHtml("<h1>"+object.getDesc()+"</h1>"));
+        holder.info_name.setText(Html.fromHtml("<h2>"+object.getDesc()+"</h2>"));
         String tekst="";
         for(int i=0;i<object.getInformations().size();i++){
-            tekst = tekst+"<h2>"+object.getInformations().get(i).name+"</h2>";
+            tekst = tekst+"<h3>"+object.getInformations().get(i).name+"</h3>";
             tekst = tekst+object.getInformations().get(i).desc;
         }
         holder.info_desc.setText(Html.fromHtml(tekst));
 
         Resources resources =  context.getResources();
-        final int resourceId = resources.getIdentifier(object.getIconPath(), "drawable",
+        final int resourceId = resources.getIdentifier(object.getFoto(), "drawable",
                 context.getPackageName());
         Glide.with(activity).load(resourceId)
                 .into(holder.info_image);

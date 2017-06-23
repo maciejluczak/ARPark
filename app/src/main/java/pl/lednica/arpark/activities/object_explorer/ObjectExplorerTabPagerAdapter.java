@@ -37,6 +37,8 @@ public class ObjectExplorerTabPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return tabsTitlesList.get(position);
+        //Dla zakładek z ikonami zwraca null
+        return null;
+        //return tabsTitlesList.get(position);
     }
 }

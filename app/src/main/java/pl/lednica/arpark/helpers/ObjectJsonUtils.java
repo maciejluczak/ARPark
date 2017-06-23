@@ -33,6 +33,7 @@ public class ObjectJsonUtils {
     private final static String OBJ_DETAILS = "details";
     private final static String VAR_DETAILS_DESC = "description";
     private final static String VAR_DETAILS_ICON = "icon";
+    private final static String VAR_DETAILS_FOTO = "foto";
     private final static String ARR_DETAILS_INFO = "information";
     private final static String VAR_DETAILS_INFO_NAME = "name";
     private final static String VAR_DETAILS_INFO_TEXT = "text";
@@ -107,6 +108,9 @@ public class ObjectJsonUtils {
                     }
                     if(details.has(VAR_DETAILS_ICON)){
                         modelDefinition.setIconPath(details.getString(VAR_DETAILS_ICON));
+                    }
+                    if(details.has(VAR_DETAILS_FOTO)){
+                        modelDefinition.setFoto(details.getString(VAR_DETAILS_FOTO));
                     }
                     if(details.has(ARR_DETAILS_INFO)){
                         modelDefinition.setInformations(new ArrayList<ObjectModel.ObjectModelInformation>());

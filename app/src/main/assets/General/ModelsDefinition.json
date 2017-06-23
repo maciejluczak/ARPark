@@ -30,7 +30,8 @@
       },
       "details": {
         "description": "Chata chłopska okresu wczesnopiastowskiego",
-        "icon": "chatka_foto",
+        "icon": "ic_action_cottage",
+        "foto": "chatka_foto",
         "information": [
           {
             "name": "Podgrodzie",
@@ -69,7 +70,8 @@
       },
       "details": {
         "description": "Odnalezienie na ostrowie lednickim muszli pielgrzyma, będącej znakiem ludzi udających się do Santiago de Compostela",
-        "icon": "pielgrzym_foto",
+        "icon": "ic_action_compostela",
+        "foto": "pielgrzym_foto",
         "information": [
           {
             "name": "Santiago de Compostella",
@@ -103,7 +105,8 @@
       },
       "details": {
         "description": "Kammieny kościół grodowy",
-        "icon": "kosciol_foto",
+        "icon": "ic_action_church",
+        "foto": "kosciol_foto",
         "information": [
           {
             "name": "Opis",
@@ -124,10 +127,85 @@
       },
       "model": {
         "meta": {
-          "name": "kosciol-lednica-ostateczny",
+          "name": "wall-lednica-ostateczny-przegladarka",
           "path": "Wall",
-          "textureImage": "wall_tekstura.png",
-          "scale": "1.0"
+          "textureImage": "wall-tekstura2.png",
+          "scale": "8.0"
+        },
+        "mesh": [
+          {
+            "name": "Cylinder_1"
+          },
+          {
+            "name": "Cylinder_2"
+          },
+          {
+            "name": "Cylinder_3"
+          },
+          {
+            "name": "Cylinder_4"
+          },
+          {
+            "name": "Cylinder_5"
+          },
+          {
+            "name": "Cylinder_6"
+          },
+          {
+            "name": "Cylinder_7"
+          },
+          {
+            "name": "Cylinder_8"
+          },
+          {
+            "name": "Cylinder_9"
+          },
+          {
+            "name": "Cylinder_10"
+          },
+          {
+            "name": "Cylinder_11"
+          },
+          {
+            "name": "Cylinder_12"
+          },
+          {
+            "name": "Cylinder_13"
+          }
+        ]
+      },
+      "details": {
+        "description": "Pozostałości wału obronnego grodu",
+        "icon": "ic_action_wall",
+        "foto": "wal_foto",
+        "information": [
+          {
+            "name": "Opis",
+            "text": "Grube bierwiona układało się warstwami ciasno, jedna na drugiej. Kłody pierwszej miały położenie poprzeczne w stosunku do kierunku biegu samego wału, belki warstwy drugiej, wyższej, leżały doń równolegle i tak dalej, i dalejaż do wysokości dziesięciu lub dwunastu metrów. Puste przestrzenie między tramami wypełniało się ubitą ziemią i kamieniami. Na samym wierzchu zwężającego się ku górze wału mógł stanąć szereg skrzyń-izbic, wypełnionychgłazami albo zwarty częstokół. Nieprzerwany a pochyły płot z zaostrzonychpali bronił jeszcze przystępu do umocnienia od zewnątrz. Na samym dole wały mogły sięgać do dwudziestu metrów szerokości."
+          },
+          {
+            "name": "Udoskonalenia",
+            "text": "Później - około połowy X w. - wprowadzono dodatkowe udoskonalenie. Polegało ono na tym, że niektóre, w regularnych odstępach umieszczone kłody poprzeczne miały haki-zaczepy, mocno przytrzymujące belki warstwy wyższej i uniemożliwiające ich wysunięcie się. Zaczep powstawał po prostu zodpowiednio przyciętego konara drzewa, zawczasu na ten cel wybranego. Hak nie mógł odpaść ani puścić, bo był przecież zrośnięty z kłodą, stanowiącą częśćskładową samego wału."
+          },
+          {
+            "name": "Przypis",
+            "text": "Teksty zacytowane z książki Polska Piastów autorstwa Pawła Jasienicy"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Palatium",
+      "position": {
+        "lat": 17.37668,
+        "long": 52.526548
+      },
+      "model": {
+        "meta": {
+          "name": "palatium-lednica-ostateczny-przegladarka",
+          "path": "Palatium",
+          "textureImage": "palatium-tekstura.png",
+          "scale": "4.0"
         },
         "mesh": [
           {
@@ -137,15 +215,16 @@
       },
       "details": {
         "description": "Pozostałości wału obronnego grodu",
-        "icon": "wal_foto",
+        "icon": "ic_action_palatium",
+        "foto": "palatium_foto",
         "information": [
           {
             "name": "Opis",
-            "text": ""
+            "text": "Stara legenda głosi, że Bolesław Chrobry ujrzał światło dzienne na OstrowieJeziora Lednickiego w Wielkopolsce. Najpóźniej na przełomie X i XI stuleciastanął tam kamienny kościół chrześcijański i zbudowany z tegoż samegomateriału (a po części nawet ze sztucznego kamienia) piętrowy zamek, kryty ołowianymi płytkami. Zdobiący ściany jasny tynk, wskutek przymieszkitlenku żelaza, pod działaniem wilgoci nabierał zabarwienia różowego. Ruiny tych gmachów istnieją, mnóstwo ludzi je oglądało, zanim archeologowie wykryli ich dawną świetność."
           },
           {
-            "name": "Przypisy",
-            "text": ""
+            "name": "Przypis",
+            "text": "Teksty zacytowane z książki Polska Piastów autorstwa Pawła Jasienicy"
           }
         ]
       }

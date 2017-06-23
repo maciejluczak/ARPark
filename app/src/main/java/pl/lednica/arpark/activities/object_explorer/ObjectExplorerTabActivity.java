@@ -1,14 +1,12 @@
 package pl.lednica.arpark.activities.object_explorer;
 
 import android.content.Intent;
-import android.opengl.GLSurfaceView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 
@@ -18,9 +16,6 @@ import pl.lednica.arpark.R;
 import pl.lednica.arpark.activities.MainActivity;
 import pl.lednica.arpark.helpers.ObjectJsonUtils;
 import pl.lednica.arpark.helpers.ObjectModel;
-import pl.lednica.arpark.opengl_based_3d_engine.LightColorRenderer;
-import pl.lednica.arpark.opengl_based_3d_engine.LightTextureRenderer;
-import pl.lednica.arpark.opengl_based_3d_engine.ObjectExplorerView;
 
 /**
  * Created by Maciej on 2017-03-24.
@@ -58,21 +53,26 @@ public class ObjectExplorerTabActivity extends AppCompatActivity {
         pages.setAdapter(pagerAdapter);
         tabs.setupWithViewPager(pages);
 
+        //Ustawienie ikon zakładek
+        setPageIcons();
+
         //Przycisk uruchamiający moduł 3d
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                tabID = pages.getCurrentItem();
-                Log.e(INTENT_OBJECT_EXTRA, tabID.toString());
+        if (fab != null) {
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    tabID = pages.getCurrentItem();
+                    Log.e(INTENT_OBJECT_EXTRA, tabID.toString());
 
-                    Class destinationClass = ObjectExplorer3DActivity.class;
-                    Intent intentToStart3DActivity = new Intent(getApplicationContext(), destinationClass);
-                    intentToStart3DActivity.putExtra(INTENT_OBJECT_EXTRA, objects.get(pages.getCurrentItem()));
-                    startActivity(intentToStart3DActivity);
+                        Class destinationClass = ObjectExplorer3DActivity.class;
+                        Intent intentToStart3DActivity = new Intent(getApplicationContext(), destinationClass);
+                        intentToStart3DActivity.putExtra(INTENT_OBJECT_EXTRA, objects.get(pages.getCurrentItem()));
+                        startActivity(intentToStart3DActivity);
 
-            }
-        });
+                }
+            });
+        }
 
     }
 
@@ -82,6 +82,12 @@ public class ObjectExplorerTabActivity extends AppCompatActivity {
         for(int i=0; i< objects.size();i++){
             ObjectExplorerListFragment fragment = ObjectExplorerListFragment.newInstance(objects.get(i));
             pagerAdapter.addTab( fragment, objects.get(i).getName());
+        }
+    }
+
+    private void setPageIcons(){
+        for(int i=0;i<pagerAdapter.getCount();i++){
+           tabs.getTabAt(i).setIcon(getResources().getIdentifier(objects.get(i).getIconPath(), "drawable", getPackageName()));
         }
     }
 

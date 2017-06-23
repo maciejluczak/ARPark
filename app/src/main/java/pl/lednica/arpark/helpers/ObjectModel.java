@@ -8,7 +8,7 @@ import java.util.ArrayList;
  */
 
 public class ObjectModel implements Serializable{
-    private String name, modelName, modelPath, textureImage, desc, iconPath;
+    private String name, modelName, modelPath, textureImage, desc, foto, iconPath;
     private Double latitude, longitude;
     private float scale;
     private ArrayList<String> meshs;
@@ -23,6 +23,14 @@ public class ObjectModel implements Serializable{
             this.name = name;
             this.desc = desc;
         }
+    }
+
+    public String getFoto() {
+        return foto;
+    }
+
+    public void setFoto(String foto) {
+        this.foto = foto;
     }
 
     public float getScale() {
