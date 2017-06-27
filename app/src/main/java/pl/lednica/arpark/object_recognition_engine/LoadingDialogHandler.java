@@ -20,7 +20,6 @@ import android.view.View;
 public final class LoadingDialogHandler extends Handler
 {
     private final WeakReference<Activity> mActivity;
-    // Constants for Hiding/Showing Loading dialog
     public static final int HIDE_LOADING_DIALOG = 0;
     public static final int SHOW_LOADING_DIALOG = 1;
     

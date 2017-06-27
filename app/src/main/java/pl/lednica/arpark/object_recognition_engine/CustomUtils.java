@@ -93,12 +93,6 @@ public class CustomUtils
     }
     
     
-    // Transforms a screen pixel to a pixel onto the camera image,
-    // taking into account e.g. cropping of camera image to fit different aspect
-    // ratio screen.
-    // for the camera dimensions, the width is always bigger than the height
-    // (always landscape orientation)
-    // Top left of screen/camera is origin
     public static void screenCoordToCameraCoord(int screenX, int screenY,
         int screenDX, int screenDY, int screenWidth, int screenHeight,
         int cameraWidth, int cameraHeight, int[] cameraX, int[] cameraY,
@@ -108,8 +102,6 @@ public class CustomUtils
         videoWidth = (float) cameraWidth;
         videoHeight = (float) cameraHeight;
 
-        // Compute the angle by which the camera image should be rotated clockwise so that it is
-        // shown correctly on the display given its current orientation.
         int correctedRotation = ((((displayRotation*90)-cameraRotation)+360)%360)/90;
 
         switch (correctedRotation) {
@@ -165,7 +157,6 @@ public class CustomUtils
         
         if (videoAspectRatio < screenAspectRatio)
         {
-            // the video height will fit in the screen height
             scaledUpVideoWidth = (float) screenHeight / videoAspectRatio;
             scaledUpVideoHeight = screenHeight;
             scaledUpX = (float) screenX
@@ -173,7 +164,6 @@ public class CustomUtils
             scaledUpY = (float) screenY;
         } else
         {
-            // the video width will fit in the screen width
             scaledUpVideoHeight = (float) screenWidth * videoAspectRatio;
             scaledUpVideoWidth = screenWidth;
             scaledUpY = (float) screenY

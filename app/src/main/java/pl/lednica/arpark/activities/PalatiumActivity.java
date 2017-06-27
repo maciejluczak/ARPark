@@ -53,10 +53,10 @@ public class PalatiumActivity extends Activity implements CustomApplicationContr
 
     CustomApplicationSession vuforiaAppSession;
 
-    // Our OpenGL view:
+    
     private CustomApplicationGLView mGlView;
 
-    // Our renderer:
+    
     private MultiTargetRenderer mRenderer;
 
     private RelativeLayout mUILayout;
@@ -68,21 +68,21 @@ public class PalatiumActivity extends Activity implements CustomApplicationContr
     private LoadingDialogHandler loadingDialogHandler = new LoadingDialogHandler(
             this);
 
-    // The textures we will use for rendering:
+    
     private Vector<Texture> mTextures;
 
     private MultiTarget mit = null;
 
     private DataSet dataSet = null;
 
-    // Alert Dialog used to display SDK errors
+    
     private AlertDialog mErrorDialog;
 
     boolean mIsDroidDevice = false;
 
 
-    // Called when the activity first starts or the user navigates back to an
-    // activity.
+    
+    
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -96,7 +96,7 @@ public class PalatiumActivity extends Activity implements CustomApplicationContr
         vuforiaAppSession
                 .initAR(this, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
-        // Load any sample specific textures:
+        
         mTextures = new Vector<Texture>();
         loadTextures();
 
@@ -107,11 +107,11 @@ public class PalatiumActivity extends Activity implements CustomApplicationContr
 
     }
 
-    // Process Single Tap event to trigger autofocus
+    
     private class GestureListener extends
             GestureDetector.SimpleOnGestureListener
     {
-        // Used to set autofocus one second after a manual focus is triggered
+        
         private final Handler autofocusHandler = new Handler();
 
 
@@ -125,8 +125,8 @@ public class PalatiumActivity extends Activity implements CustomApplicationContr
         @Override
         public boolean onSingleTapUp(MotionEvent e)
         {
-            // Generates a Handler to trigger autofocus
-            // after 1 second
+            
+            
             autofocusHandler.postDelayed(new Runnable()
             {
                 public void run()
@@ -144,8 +144,8 @@ public class PalatiumActivity extends Activity implements CustomApplicationContr
     }
 
 
-    // We want to load specific textures from the APK, which we will later use
-    // for rendering.
+    
+    
     private void loadTextures()
     {
         mTextures.add(Texture.loadTextureFromApk(
@@ -154,14 +154,14 @@ public class PalatiumActivity extends Activity implements CustomApplicationContr
     }
 
 
-    // Called when the activity will start interacting with the user.
+    
     @Override
     protected void onResume()
     {
         Log.d(LOGTAG, "onResume");
         super.onResume();
 
-        // This is needed for some Droid devices to force portrait
+        
         if (mIsDroidDevice)
         {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -176,7 +176,7 @@ public class PalatiumActivity extends Activity implements CustomApplicationContr
             Log.e(LOGTAG, e.getString());
         }
 
-        // Resume the GL view:
+        
         if (mGlView != null)
         {
             mGlView.setVisibility(View.VISIBLE);
@@ -196,7 +196,7 @@ public class PalatiumActivity extends Activity implements CustomApplicationContr
     }
 
 
-    // Called when the system is about to start resuming a previous activity.
+    
     @Override
     protected void onPause()
     {
@@ -219,7 +219,7 @@ public class PalatiumActivity extends Activity implements CustomApplicationContr
     }
 
 
-    // The final call you receive before your activity is destroyed.
+    
     @Override
     protected void onDestroy()
     {
@@ -234,14 +234,14 @@ public class PalatiumActivity extends Activity implements CustomApplicationContr
             Log.e(LOGTAG, e.getString());
         }
 
-        // Unload texture:
+        
         mTextures.clear();
         mTextures = null;
 
         System.gc();
     }
 
-    // Prawdopodobni mozna wywalic tez
+    
     @Override
     public boolean onTouchEvent(MotionEvent event)
     {
@@ -258,33 +258,33 @@ public class PalatiumActivity extends Activity implements CustomApplicationContr
         mUILayout.setVisibility(View.VISIBLE);
         mUILayout.setBackgroundColor(Color.BLACK);
 
-        // Gets a reference to the loading dialog
+        
         loadingDialogHandler.mLoadingDialogContainer = mUILayout
                 .findViewById(R.id.loading_indicator);
 
-        // Shows the loading indicator at start
+        
         loadingDialogHandler
                 .sendEmptyMessage(LoadingDialogHandler.SHOW_LOADING_DIALOG);
 
-        // Adds the inflated layout to the view
+        
         addContentView(mUILayout, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
 
-    // Initializes AR application components.
+    
     private void initApplicationAR()
     {
-        // Create OpenGL ES view:
+        
         int depthSize = 16;
         int stencilSize = 0;
         boolean translucent = Vuforia.requiresAlpha();
 
-        // Stworzenie widoku OpenGli
+        
         mGlView = new CustomApplicationGLView(this);
         mGlView.init(translucent, depthSize, stencilSize);
 
-        // Stworzenie w nim  renderera od renderowania :)
+        
 
         mRenderer = new MultiTargetRenderer(vuforiaAppSession, new PalatiumObject());
         mRenderer.setTextures(mTextures);
@@ -292,27 +292,27 @@ public class PalatiumActivity extends Activity implements CustomApplicationContr
 
     }
 
-    // sprawdza czy wszystko jest dobrze zrobione
-    // sprawdza czy wszystko jest dobrze zrobione
+    
+    
     void initMIT()
     {
-        //
-        // This function checks the current tracking setup for completeness. If
-        // it finds that something is missing, then it creates it and configures
-        // it:
-        // Any MultiTarget and Part elements missing from the config.xml file
-        // will be created.
-        //
+        
+        
+        
+        
+        
+        
+        
 
         Log.d(LOGTAG, "Beginning to check the tracking setup");
 
-        // Configuration data - identical to what is in the config.xml file
-        //
-        // If you want to recreate the trackable assets using the on-line TMS
-        // server using the original images provided in the sample's media
-        // folder, use the following trackable sizes on creation to get
-        // identical visual results:
-        // create a cuboid with width = 90 ; height = 120 ; length = 60.
+        
+        
+        
+        
+        
+        
+        
 
         String names[] = { "wphmarker.Front", "wphmarker.Back",
                 "wphmarker.Left", "wphmarker.Right", "wphmarker.Top",
@@ -332,8 +332,8 @@ public class PalatiumActivity extends Activity implements CustomApplicationContr
             return;
         }
 
-        // Go through all Trackables to find the MultiTarget instance
-        //
+        
+        
         for (int i = 0; i < dataSet.getNumTrackables(); i++)
         {
             if (dataSet.getTrackable(i).getType() == MultiTargetResult
@@ -345,7 +345,7 @@ public class PalatiumActivity extends Activity implements CustomApplicationContr
             }
         }
 
-        // If no MultiTarget was found, then let's create one.
+        
         if (mit == null)
         {
             Log.d(LOGTAG, "No MultiTarget found -> creating one");
@@ -359,13 +359,13 @@ public class PalatiumActivity extends Activity implements CustomApplicationContr
             }
         }
 
-        // Try to find each ImageTarget. If we find it, this actually means that
-        // it is not part of the MultiTarget yet: ImageTargets that are part of
-        // a MultiTarget don't show up in the list of Trackables.
-        // Each ImageTarget that we found, is then made a part of the
-        // MultiTarget and a correct pose (reflecting the pose of the
-        // config.xml file) is set).
-        //
+        
+        
+        
+        
+        
+        
+        
         int numAdded = 0;
         for (int i = 0; i < 6; i++)
         {
@@ -429,7 +429,7 @@ public class PalatiumActivity extends Activity implements CustomApplicationContr
     @Override
     public boolean doInitTrackers()
     {
-        // Indicate if the trackers were initialized correctly
+        
         boolean result = true;
 
         TrackerManager tManager = TrackerManager.getInstance();
@@ -454,7 +454,7 @@ public class PalatiumActivity extends Activity implements CustomApplicationContr
     @Override
     public boolean doLoadTrackersData()
     {
-        // Get the image tracker:
+        
         TrackerManager trackerManager = TrackerManager.getInstance();
         ObjectTracker objectTracker = (ObjectTracker) trackerManager
                 .getTracker(ObjectTracker.getClassType());
@@ -466,7 +466,7 @@ public class PalatiumActivity extends Activity implements CustomApplicationContr
             return false;
         }
 
-        // Create the data set:
+        
         dataSet = objectTracker.createDataSet();
         if (dataSet == null)
         {
@@ -474,7 +474,7 @@ public class PalatiumActivity extends Activity implements CustomApplicationContr
             return false;
         }
 
-        // Load the data set:
+        
         if (!dataSet.load("Target/WPH.xml",
                 STORAGE_TYPE.STORAGE_APPRESOURCE))
         {
@@ -484,7 +484,7 @@ public class PalatiumActivity extends Activity implements CustomApplicationContr
 
         Log.d(LOGTAG, "Successfully loaded the data set.");
 
-        // Validate the MultiTarget and setup programmatically if required:
+        
         initMIT();
 
         if (!objectTracker.activateDataSet(dataSet))
@@ -497,7 +497,7 @@ public class PalatiumActivity extends Activity implements CustomApplicationContr
     @Override
     public boolean doStartTrackers()
     {
-        // Indicate if the trackers were started correctly
+        
         boolean result = true;
 
         Tracker objectTracker = TrackerManager.getInstance().getTracker(
@@ -512,7 +512,7 @@ public class PalatiumActivity extends Activity implements CustomApplicationContr
     @Override
     public boolean doStopTrackers()
     {
-        // Indicate if the trackers were stopped correctly
+        
         boolean result = true;
 
         Tracker objectTracker = TrackerManager.getInstance().getTracker(
@@ -527,10 +527,10 @@ public class PalatiumActivity extends Activity implements CustomApplicationContr
     @Override
     public boolean doUnloadTrackersData()
     {
-        // Indicate if the trackers were unloaded correctly
+        
         boolean result = true;
 
-        // Get the image tracker:
+        
         TrackerManager trackerManager = TrackerManager.getInstance();
         ObjectTracker objectTracker = (ObjectTracker) trackerManager
                 .getTracker(ObjectTracker.getClassType());
@@ -570,7 +570,7 @@ public class PalatiumActivity extends Activity implements CustomApplicationContr
     @Override
     public boolean doDeinitTrackers()
     {
-        // Indicate if the trackers were deinitialized correctly
+        
         boolean result = true;
 
         TrackerManager tManager = TrackerManager.getInstance();
@@ -590,21 +590,21 @@ public class PalatiumActivity extends Activity implements CustomApplicationContr
 
             mRenderer.mIsActive = true;
 
-            // Now add the GL surface view. It is important
-            // that the OpenGL ES surface view gets added
-            // BEFORE the camera is started and video
-            // background is configured.
+            
+            
+            
+            
             addContentView(mGlView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT));
 
-            // Sets the UILayout to be drawn in front of the camera
+            
             mUILayout.bringToFront();
 
-            // Hides the Loading Dialog
+            
             loadingDialogHandler
                     .sendEmptyMessage(LoadingDialogHandler.HIDE_LOADING_DIALOG);
 
-            // Sets the layout background to transparent
+            
             mUILayout.setBackgroundColor(Color.TRANSPARENT);
 
             try
@@ -630,7 +630,7 @@ public class PalatiumActivity extends Activity implements CustomApplicationContr
     }
 
 
-    // Shows initialization error messages as System dialogs
+    
     public void showInitializationErrorMessage(String message)
     {
         final String errorMessage = message;
@@ -643,7 +643,7 @@ public class PalatiumActivity extends Activity implements CustomApplicationContr
                     mErrorDialog.dismiss();
                 }
 
-                // Generates an Alert Dialog to show the error message
+                
                 AlertDialog.Builder builder = new AlertDialog.Builder(
                         PalatiumActivity.this);
                 builder

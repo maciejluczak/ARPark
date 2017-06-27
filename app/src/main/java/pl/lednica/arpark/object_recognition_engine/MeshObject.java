@@ -49,9 +49,6 @@ public abstract class MeshObject
 
     protected Buffer fillBuffer(double[] array)
     {
-        // Convert to floats because OpenGL doesn't work on doubles, and manually
-        // casting each input value would take too much time.
-        // Each float takes 4 bytes
         ByteBuffer bb = ByteBuffer.allocateDirect(4 * array.length);
         bb.order(ByteOrder.LITTLE_ENDIAN);
         for (double d : array)
@@ -65,7 +62,6 @@ public abstract class MeshObject
 
     protected Buffer fillBuffer(float[] array)
     {
-        // Each float takes 4 bytes
         ByteBuffer bb = ByteBuffer.allocateDirect(4 * array.length);
         bb.order(ByteOrder.LITTLE_ENDIAN);
         for (float d : array)
@@ -79,7 +75,6 @@ public abstract class MeshObject
 
     protected Buffer fillBuffer(short[] array)
     {
-        // Each short takes 2 bytes
         ByteBuffer bb = ByteBuffer.allocateDirect(2 * array.length);
         bb.order(ByteOrder.LITTLE_ENDIAN);
         for (short s : array)

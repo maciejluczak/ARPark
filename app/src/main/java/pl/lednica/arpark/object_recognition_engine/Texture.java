@@ -21,21 +21,18 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 
 
-// Support class for the Vuforia samples applications.
-// Exposes functionality for loading a texture from the APK.
 public class Texture
 {
     private static final String LOGTAG = "Vuforia_Texture";
     
-    public int mWidth;          // The width of the texture.
-    public int mHeight;         // The height of the texture.
-    public int mChannels;       // The number of channels.
-    public ByteBuffer mData;    // The pixel data.
+    public int mWidth;
+    public int mHeight;
+    public int mChannels;
+    public ByteBuffer mData;
     public int[] mTextureID = new int[1];
     public boolean mSuccess = false;
     
     
-    /* Factory function to load a texture from the APK. */
     public static Texture loadTextureFromApk(String fileName,
         AssetManager assets)
     {
@@ -69,7 +66,6 @@ public class Texture
     public static Texture loadTextureFromIntBuffer(int[] data, int width,
         int height)
     {
-        // Convert:
         int numPixels = width * height;
         byte[] dataBytes = new byte[numPixels * 4];
         
@@ -96,7 +92,6 @@ public class Texture
         
         texture.mData.rewind();
         
-        // Cleans variables
         dataBytes = null;
         data = null;
         

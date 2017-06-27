@@ -1,8 +1,5 @@
 package pl.lednica.arpark.object_recognition_engine;
 
-/**
- * Created by stachu on 13.08.2016.
- */
 /*===============================================================================
 Copyright (c) 2016 PTC Inc. All Rights Reserved.
 

@@ -32,7 +32,6 @@ import com.vuforia.VIDEO_BACKGROUND_REFLECTION;
 import com.vuforia.Vuforia;
 
 
-// The renderer class for the MultiTargets sample.
 public class MultiTargetRenderer implements GLSurfaceView.Renderer
 {
     private static final String LOGTAG = "MultiTargetRenderer";
@@ -56,7 +55,6 @@ public class MultiTargetRenderer implements GLSurfaceView.Renderer
 
     private MeshObject bowlAndSpoonObject;
 
-    // Constants:
     final static float kCubeScaleX = 120.0f * 0.75f / 2.0f;
     final static float kCubeScaleY = 120.0f * 1.00f / 2.0f;
     final static float kCubeScaleZ = 120.0f * 0.50f / 2.0f;
@@ -75,41 +73,33 @@ public class MultiTargetRenderer implements GLSurfaceView.Renderer
     }
 
 
-    // Called when the surface is created or recreated.
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config)
     {
         Log.d(LOGTAG, "GLRenderer.onSurfaceCreated");
 
-        // Call function to initialize rendering:
         initRendering();
 
-        // Call Vuforia function to (re)initialize rendering after first use
-        // or after OpenGL ES context was lost (e.g. after onPause/onResume):
         vuforiaAppSession.onSurfaceCreated();
     }
 
 
-    // Called when the surface changed size.
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height)
     {
         Log.d(LOGTAG, "GLRenderer.onSurfaceChanged");
         Log.d(LOGTAG, "Stanley.onSurfaceChanged");
-        // Call Vuforia function to handle render surface size changes:
         vuforiaAppSession.onSurfaceChanged(width, height);
         Log.d(LOGTAG, "GLRenderer.onSurfaceChangedExtra");
     }
 
 
-    // Called to draw the current frame.
     @Override
     public void onDrawFrame(GL10 gl)
     {
         if (!mIsActive)
             return;
 
-        // Call our function to render content:
         renderFrame();
     }
 
@@ -118,11 +108,9 @@ public class MultiTargetRenderer implements GLSurfaceView.Renderer
     {
         Log.d(LOGTAG, "MultiTargetsRenderer.initRendering");
 
-        // Define clear color
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, Vuforia.requiresAlpha() ? 0.0f
                 : 1.0f);
 
-        // Now generate the OpenGL texture objects and add settings
         for (Texture t : mTextures)
         {
             GLES20.glGenTextures(1, t.mTextureID, 0);
@@ -159,33 +147,25 @@ public class MultiTargetRenderer implements GLSurfaceView.Renderer
 
         CustomUtils.checkGLError("Check gl errors prior render Frame");
 
-        // Clear color and depth buffer
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
-        // Get the state from Vuforia and mark the beginning of a rendering
-        // section
         State state = Renderer.getInstance().begin();
 
-        // Explicitly render the Video Background
         Renderer.getInstance().drawVideoBackground();
 
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
         GLES20.glEnable(GLES20.GL_BLEND);
         GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 
-        // Set the viewport
         int[] viewport = vuforiaAppSession.getViewport();
         GLES20.glViewport(viewport[0], viewport[1], viewport[2], viewport[3]);
 
-        // Did we find any trackables this frame?
         if (state.getNumTrackableResults() != 0)
         {
             Log.d("renderFrame", "znalazlem");
-            // Get the trackable:
             TrackableResult result = null;
             int numResults = state.getNumTrackableResults();
 
-            // Browse results searching for the MultiTarget
             for (int j = 0; j < numResults; j++)
             {
                 result = state.getTrackableResult(j);
@@ -198,10 +178,8 @@ public class MultiTargetRenderer implements GLSurfaceView.Renderer
 
 
 
-            // If it was not found exit
             if (result == null)
             {
-                // Clean up and leave
                 GLES20.glDisable(GLES20.GL_BLEND);
                 GLES20.glDisable(GLES20.GL_DEPTH_TEST);
 
@@ -226,13 +204,6 @@ public class MultiTargetRenderer implements GLSurfaceView.Renderer
 
             GLES20.glUseProgram(shaderProgramID);
 
-            // Draw the cube:
-
-            // We must detect if background reflection is active and adjust the
-            // culling direction.
-            // If the reflection is active, this means the post matrix has been
-            // reflected as well, therefore standard counter clockwise face
-            // culling will result in "inside out" models.
             GLES20.glEnable(GLES20.GL_CULL_FACE);
             GLES20.glCullFace(GLES20.GL_BACK);
             if (Renderer.getInstance().getVideoBackgroundConfig()
@@ -255,26 +226,11 @@ public class MultiTargetRenderer implements GLSurfaceView.Renderer
 
             GLES20.glDisable(GLES20.GL_CULL_FACE);
 
-            // Draw the bowl:
             modelViewMatrix = modelViewMatrix_Vuforia.getData();
 
-            // Remove the following line to make the bowl stop spinning:
-//            animateBowl(modelViewMatrix);
 
-//            Matrix.translateM(modelViewMatrix, 0, 0.0f, 0.0f,
-//                1.35f * 120.0f);
-//            Matrix.rotateM(modelViewMatrix, 0, -90.0f, 1.0f, 0, 0);
-
-            // y to ta blizej dalej
-            // x -lewo +prawo
-            // z wyzej nizej
-            // x, y, z
             Matrix.translateM(modelViewMatrix, 0, 0, 0,
                     0.0f);
-            // stara wersja
-            // Matrix.rotateM(modelViewMatrix, 0, -90.0f, 1.0f, 0, 0);
-
-            //720 x 1280
             Matrix.rotateM(modelViewMatrix, 0, 90.0f, 0, 1.0f, 0);
 
             Matrix.scaleM(modelViewMatrix, 0, kBowlScaleX, kBowlScaleY,
@@ -315,10 +271,10 @@ public class MultiTargetRenderer implements GLSurfaceView.Renderer
 
     private void animateBowl(float[] modelViewMatrix)
     {
-        double time = System.currentTimeMillis(); // Get real time difference
-        float dt = (float) (time - prevTime) / 1000; // from frame to frame
+        double time = System.currentTimeMillis();
+        float dt = (float) (time - prevTime) / 1000;
 
-        rotateAngle += dt * 180.0f / 3.1415f; // Animate angle based on time
+        rotateAngle += dt * 180.0f / 3.1415f;
         rotateAngle %= 360;
         Log.d(LOGTAG, "Delta animation time: " + rotateAngle);
 
